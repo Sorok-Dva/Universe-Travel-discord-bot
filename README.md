@@ -23,6 +23,28 @@ Then when you unmute him, he just got back his roles, and he's removed from mute
 5. To check the logs you can either attach your shell to the process with `docker attach bot` or use VS Code Debugger
 6. Stop containers with `docker-compose down`
 
+### Environment file
+```dotenv
+# Discord Config Part
+TOKEN=Your Bot Token
+SERVER_OWNER=The discord id of the user that own the server
+BOT_OWNER=The discord id of the user that manage the bot (can be the server owner)
+ARRIVAL_CHANNEL_ID=The channel id where a new member should pop (used for the invitation link)
+ADMIN_ROLES_ID=Your admin role id, it will allows users of this group (so considered as admins) to use admins commands
+MOD_ROLES_ID=Your moderator role id, it will allows users of this group (so considered as mods) to use mods commands
+
+# Bot Config
+PREFIX=Prefix that trigger the commands (e.g: !)
+
+# DB
+DATABASE_URL=postgres://postgres:postgres@db/db
+```
+> 💡 The `ADMIN_ROLES_ID` & `MOD_ROLES_ID` can take more than one role, as your convenience, you just need to separate it with a comma.
+```dotenv
+ADMIN_ROLES_ID=1234456778899,1222333445567779
+MOD_ROLES_ID=12221345544646,123432225456464,1323255433412234
+```
+
 ### Useful commands
 
 - `docker-compose up -d` Runs containers
