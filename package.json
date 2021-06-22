@@ -1,0 +1,51 @@
+{
+  "name": "ustar_travel_helper",
+  "version": "0.0.1a",
+  "private": true,
+  "author": "Сорок два#0042 <sorokdva.developer@gmail.com>",
+  "scripts": {
+    "build": "run-p build:*",
+    "build:all": "tsc -d",
+    "compile": "rm -r dist; tsc && node --inspect=0.0.0.0 dist/index.js",
+    "bin": "ts-node dist/bin",
+    "dev": "nodemon -e ts --exec \"npm run compile\"",
+    "start": "ts-node src/index.ts"
+  },
+  "lint-staged": {
+    "src/**/*.ts": [
+      "eslint"
+    ]
+  },
+  "dependencies": {
+    "@discordjs/opus": "^0.5.0",
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "^12.7.3",
+    "@types/ws": "^6.0.1",
+    "cheerio": "^1.0.0-rc.2",
+    "cron": "^1.8.2",
+    "debug": "~2.6.9",
+    "discord.js": "^12.1.1",
+    "fs": "^0.0.1-security",
+    "module-alias": "^2.2.0",
+    "performance-now": "^2.1.0",
+    "slonik": "23.5.4",
+    "snekfetch": "^3.5.8",
+    "systeminformation": "^3.32.1"
+  },
+  "devDependencies": {
+    "@materya/carbon": "1.9.2",
+    "@types/cron": "^1.7.2",
+    "@types/systeminformation": "^3.54.1",
+    "eslint": "^7.28.0",
+    "nodemon": "^1.19.1",
+    "npm-run-all": "4.1.5",
+    "ts-loader": "^6.0.2",
+    "ts-node": "9.1.1",
+    "tsc-watch": "4.2.9",
+    "tsconfig-paths": "3.9.0",
+    "typescript": "4.1.4"
+  },
+  "_moduleAliases": {
+    "@": "dist"
+  }
+}

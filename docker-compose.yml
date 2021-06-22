@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+  bot:
+    container_name: ustar_travel-discord-bot
+    image: ustar_travel/discord-bot
+    build:
+      context: .
+      target: build
+    restart: always
+    tty: true
+    command: npm run dev
+    volumes:
+      - .:/build/
+      - node_modules:/build/node_modules
+    ports:
+      - 3003:3003
+      - 9229:9229
+    networks:
+      - default
+    env_file: .env
+
+volumes:
+  node_modules:
