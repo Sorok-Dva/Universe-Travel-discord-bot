@@ -1,6 +1,7 @@
 #!make
 NAME=discord-bot
 PROJECT=ustar_travel/${NAME}
+REGISTRY=registry.gitlab.com/${PROJECT}
 
 PACKAGE_LOCK = package-lock.json
 COVERAGE = .nyc_output coverage
@@ -8,9 +9,10 @@ SRC = src
 DIST = dist
 ENVFILE = .env
 MODULES = node_modules
+
 D = docker
 DC = docker-compose
-DCFLAGS = --rm ${NAME}
+DCFLAGS = --rm bot
 
 SED ?= sed
 UNAME_S = $(shell uname -s)
