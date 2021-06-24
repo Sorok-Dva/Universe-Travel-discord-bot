@@ -3,7 +3,7 @@
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
  *  | || |_  __) |            Created: 2021/06/21 1:17 PM by Сорок два
- *  |__   _|/ __/             Updated: 2021/06/23 10:24 PM by Сорок два
+ *  |__   _|/ __/             Updated: 2021/06/24 8:27 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { Message, TextChannel } from 'discord.js'
@@ -19,7 +19,7 @@ exports.run = async (
 
   try {
     const [num] = args
-    const amount = Number.parseInt(num, 2) ?? 1
+    const amount = Number.parseInt(num, 10) ?? 1
     const finalAmount = amount > 50 ? 50 : amount
     const channel = message.channel as TextChannel
     channel.bulkDelete(finalAmount).then(async () => {

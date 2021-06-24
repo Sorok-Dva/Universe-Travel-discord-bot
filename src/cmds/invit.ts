@@ -3,7 +3,7 @@
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
  *  | || |_  __) |            Created: 2021/06/21 12:12 AM by Сорок два
- *  |__   _|/ __/             Updated: 2021/06/23 10:23 PM by Сорок два
+ *  |__   _|/ __/             Updated: 2021/06/24 8:28 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { env } from '@materya/carbon'
@@ -16,8 +16,8 @@ exports.run = (
 ): void => {
   if (!message.guild) return
   const [age, use] = args
-  const maxAge = (typeof parseInt(String(age), 2) === 'number') ? (Number(age) * 3600) : 3600
-  const maxUse = (typeof parseInt(String(use), 2) === 'number') ? use : 10
+  const maxAge = (typeof parseInt(String(age), 10) === 'number') ? (Number(age) * 3600) : 3600
+  const maxUse = (typeof parseInt(String(use), 10) === 'number') ? use : 10
   if (!Number.isNaN(age as number)
     && !Number.isNaN(use as number)
     && Number(age) <= 24
