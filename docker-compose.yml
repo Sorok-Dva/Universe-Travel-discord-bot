@@ -9,7 +9,7 @@ services:
       target: build
     restart: always
     tty: true
-    command: npm run develop
+    command: npm run start
     volumes:
       - .:/build/
       - node_modules:/build/node_modules
@@ -26,8 +26,11 @@ services:
     volumes:
       - db-data:/var/lib/postgresql
     ports:
-      - ${DEV_DB_PORT:-4012}:5432
+      - ${DEV_DB_PORT:-4012}:4012
     env_file: .env
+    networks:
+      - default
+      - localnet
     environment:
       PGHOST: ""
 

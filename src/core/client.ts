@@ -1,15 +1,22 @@
 /** ***************************************************************************
- *  core/client.ts
+ *  client.ts
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
  *  | || |_  __) |            Created: 2021/06/20 12:36 AM by Сорок два
- *  |__   _|/ __/             Updated: 2021/06/23 10:27 PM by Сорок два
+ *  |__   _|/ __/             Updated: 2021/06/26 1:32 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
-import { BotOptions, Command, Commands } from '@ustar_travel/discord-bot'
-import { Client, Guild, Message } from 'discord.js'
+import {
+  BotOptions,
+  Command,
+  Commands,
+  CommandInstance,
+  CommandString,
+} from '@ustar_travel/discord-bot'
+import { Client, Message } from 'discord.js'
 import { errors } from '.'
 import { ConnectionHandler } from '../handlers'
+import { CommandArgs } from '../helpers'
 
 /**
  * Bot Client Class that retrieve djs collections after login and listen events
@@ -21,10 +28,7 @@ export default class BotClient extends Client {
   private readonly config: BotOptions
 
   /* The Discord.js Client Object */
-  private client: Client | null
-
-  /* The main guild (this bot is not configured for a multi-servers but specially only one) */
-  public guild: Guild | null
+  public client: Client
 
   /* The prefix use to trigger the commands */
   public prefix: string
@@ -55,37 +59,30 @@ export default class BotClient extends Client {
     ]
     this.config = config
     this.prefix = config.prefix
-    this.client = null
-    this.guild = null
+    this.client = new Client()
     this.streaming = false
     this.activityTick = 1
     this.activities = ['les étoiles ✨', 'récupérer des infos passionnantes ! 📰']
   }
 
   /**
-   * Discord start method thet should be used after the initialization of this interface to start the bot
+   * Discord start method that should be used after the initialization of this interface to start the bot
    *
    * @function
    *
    * @returns Promise<this>
    * */
   public async start (): Promise<this> {
-    const client = new Client()
+    this.client.once('ready', this.ready)
+    this.client.on('error', console.error)
+    this.client.on('reconnecting', () => console.log('Reconnecting ...'))
+    this.client.on('disconnect', () => console.warn('Disconnected'))
+    this.client.on('shardDisconnect', () => console.warn('shardDisconnect'))
+    this.client.on('shardError', () => console.warn('shardError'))
+    // this.client.on('voiceStateUpdate', this.voiceStateUpdate)
+    this.client.on('message', msg => this.message(msg))
 
-    client.once('ready', this.ready)
-    client.on('error', console.error)
-    client.on('reconnecting', () => console.log('Reconnecting ...'))
-    client.on('disconnect', () => console.warn('Disconnected'))
-    client.on('shardDisconnect', () => console.warn('shardDisconnect'))
-    client.on('shardError', () => console.warn('shardError'))
-    client.on('message', msg => this.message(
-      msg,
-      this.prefix,
-      this.commands,
-    ))
-
-    await client.login(this.config.token)
-    this.client = client
+    await this.client.login(this.config.token)
     return this
   }
 
@@ -96,10 +93,10 @@ export default class BotClient extends Client {
    *
    * @returns this
    * */
-  public ready (): this {
-    console.log(`Bot ready as ${this.user?.username} to help this awesome community !`)
+  public async ready (): Promise<this> {
+    console.log(`Bot ready as ${this.user?.username}`)
 
-    ConnectionHandler.main(this)
+    await ConnectionHandler.main()
 
     return this
   }
@@ -136,23 +133,50 @@ export default class BotClient extends Client {
    * */
   public async message (
     message: Message,
-    prefix: string,
-    commands: Commands,
   ): Promise<void> {
     try {
       if (!message.guild || message.channel.type === 'dm' || message.author.bot) return
-      if (!message.content.startsWith(prefix)) return
+      const { commands, prefix } = this
 
-      const args: Array<string> = message.content.slice(prefix.length).trim().split(/ +/g)
+      const isValidCommandString = (
+        messageContent: string,
+      ): messageContent is
+        CommandString => messageContent.startsWith(prefix)
 
-      // @ts-ignore
-      const command: Command = args.shift().toLowerCase()
-      if (commands.includes(command)) {
-        await message.delete()
+      const isValidCommand = (
+        command: string,
+      ): command is Command => commands.includes(command as Command)
 
-        // todo rework this to be TS compliant
-        const commandFile = require(`/build/dist/cmds/${command}.js`)
-        commandFile.run(message, args, this.config)
+      if (isValidCommandString(message.content)) {
+        const results = message.content.match(/^!([\w]+)(.*)$/)
+        if (results) {
+          const [_, command, ...cmdArgs] = results
+          if (isValidCommand(command)) {
+            try {
+              await message.delete()
+              let commandModule: CommandInstance<typeof command>
+              const module = await import(`../cmds/${command}.ts`)
+              // eslint-disable-next-line prefer-const
+              commandModule = module.default
+
+              const unknownArgs = cmdArgs[0].trim().split(/ +/g).filter(a => a !== '')
+
+              if (!CommandArgs.validate(
+                unknownArgs,
+                commandModule,
+                message,
+              )) return
+
+              const args: typeof commandModule.args = unknownArgs
+              commandModule.run(message, args, {
+                config: this.config,
+                client: this.client,
+              })
+            } catch (e) {
+              errors.log(e)
+            }
+          }
+        }
       }
     } catch (err) {
       errors.raiseReply(err, message)

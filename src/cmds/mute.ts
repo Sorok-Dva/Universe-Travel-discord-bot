@@ -2,27 +2,40 @@
  *  cmds/mute.ts
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
- *  | || |_  __) |            Created: 2021/06/21 10:07 PM by Сорок два
- *  |__   _|/ __/             Updated: 2021/06/23 10:23 PM by Сорок два
+ *  | || |_  __) |            Created: 2021/06/26 1:10 PM by Сорок два
+ *  |__   _|/ __/             Updated: 2021/06/26 1:12 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { CommandEntity } from '@ustar_travel/discord-bot'
+import { env } from '@materya/carbon'
 import { Message } from 'discord.js'
-import { BotOptions } from '@ustar_travel/discord-bot'
 import { errors } from '../core'
 import { CommandAccess } from '../helpers'
 
-exports.run = async (
+type Args = readonly string[]
+
+const run = (
   message: Message,
-  args: Array<string>,
-  config: BotOptions,
-): Promise<boolean> => {
+  args: Args,
+): void => {
   const accessAllowed = CommandAccess.checkPermission(message.author, 'mod', message)
-  if (!accessAllowed) return false
+  if (!accessAllowed) return
   try {
     // incoming
   } catch (e) {
     errors.raiseReply(e, message)
-    return false
   }
-  return false
 }
+
+const command: CommandEntity<string> = {
+  title: 'mute',
+  desc: 'Vous permet de rendre muet un utilisateur',
+  args: [],
+  mandatoryArgs: true,
+  usage: 'mute [utilisateur] [durée]',
+  examples: ['mute @utilisateur 1h', 'mute @utilisateur 7d'],
+  run,
+}
+
+export default command

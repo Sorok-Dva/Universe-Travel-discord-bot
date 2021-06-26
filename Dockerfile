@@ -1,11 +1,32 @@
 ARG APT_FLAGS="-y -qq --no-install-recommends --no-install-suggests"
 
-FROM node:15-buster-slim as packages
+FROM node:15-buster-slim as base
+
+ARG APT_FLAGS
+ARG COMMON_PACKAGES="\
+  musl-dev \
+"
+RUN mkdir -p /usr/share/man/man1
+RUN apt-get update ${APT_FLAGS} \
+  && apt-get install ${APT_FLAGS} ${COMMON_PACKAGES} \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN ln -s /usr/lib/x86_64-linux-musl/libc.so /lib/libc.musl-x86_64.so.1
+
+ARG BASE_IMAGE=node:15-buster-slim
+
+FROM base as packages
 
 WORKDIR /build
 
 ARG APT_FLAGS
-ARG BUILD_PACKAGES=""
+ARG BUILD_PACKAGES="\
+  curl \
+  g++ \
+  gnupg2 \
+  make \
+"
 
 RUN apt-get update ${APT_FLAGS} \
   && apt-get install ${APT_FLAGS} ${BUILD_PACKAGES} \

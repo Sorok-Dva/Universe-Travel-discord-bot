@@ -1,7 +1,6 @@
 #!make
 NAME=discord-bot
 PROJECT=ustar_travel/${NAME}
-REGISTRY=registry.gitlab.com/${PROJECT}
 
 PACKAGE_LOCK = package-lock.json
 COVERAGE = .nyc_output coverage
@@ -40,12 +39,8 @@ ifneq (,$(wildcard $(ENVFILE)))
 	export $(shell sed 's/=.*//' $(ENVFILE))
 endif
 
-
 .PHONY: all
 all: clean $(DIST)
-
-$(LOCALCONFIG):
-	cp -a $(SRC)/config $(LOCALCONFIG)
 
 $(ENVFILE):
 	cp $(ENVFILE).defaults $(ENVFILE)
@@ -76,6 +71,10 @@ clean-all: clean clean-modules
 start: $(ENVFILE) $(LOCALCONFIG) $(MODULES)
 	$(DC) up
 
+.PHONY: test
+test: $(ENVFILE)  $(MODULES)
+	$(PM) t
+
 coverage:
 	$(PM) run coverage
 
@@ -89,16 +88,6 @@ ifneq (,$(findstring n,$(MAKEFLAGS)))
 	+$(PM) run release -- --dry-run
 else
 	$(PM) run release
-	git push --follow-tags origin master
-endif
-
-.PHONY: prerelease
-prerelease: PM = npm
-prerelease: $(DIST)
-ifneq (,$(findstring n,$(MAKEFLAGS)))
-	+$(PM) run release -- --prerelease $(PRERELEASE_TAG) --dry-run
-else
-	$(PM) run release -- --prerelease $(PRERELEASE_TAG)
 	git push --follow-tags origin master
 endif
 
