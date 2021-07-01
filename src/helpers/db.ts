@@ -6,7 +6,7 @@
  *  |__   _|/ __/             Updated: 2021/06/27 5:24 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
-import { Message } from 'discord.js'
+import { GuildMember, Message } from 'discord.js'
 import { Entity, User } from '@ustar_travel/discord-bot'
 import { userFactory } from '../db/factories'
 import { userRepo } from '../db/repositories'
@@ -40,22 +40,41 @@ export const userUpdate = async (
 }
 
 export const savingRolesBeforeMute = async (
-  message: Message,
+  member: GuildMember,
+  reason: string,
 ): Promise<Entity<User>> => {
-  const userRoles = message.member?.roles.cache.map(r => (
-    r.delete('Mute Temporaire - Pour que le mute soit efficace aucun autre rôle ne doit être actif avec des permissions plus élévées (peu importe la hierahie sur discord')
-  ))
+  const oldRanks: string[] = []
+  member?.roles.cache.map(r => {
+    const necessaryRemoveRole = [
+      '859191061712601129', // Aspirant Voyageur
+      '854813324377194496', // Voyageur Initié
+      '854814002563776532', // Voyageur confirmé
+      '854814002563776532', // Aspirant Membre
+      '854813976450170941', // Aspirant Membre
+      '859771743195496468', // Membre d'équipage
+      '854816696811913267', // Membre Honorable
+      '760062417932779529', // Parrain
+      '760062417941692436', // Membre Honoré
+    ]
+    if (necessaryRemoveRole.includes(r.id)) {
+      oldRanks.push(r.id)
+      member.roles.remove(r, 'Mute Temporaire - Raison : Nécessite la suppresion de tous les roles pour être fonctionnel')
+    }
+    member.roles.add('854816691544653895', `Mute Temporaire - Raison : ${reason}`)
+    return r
+  })
+
   const dbUserId = await userFactory.upsert({
-    id: message.author.id,
-    nickname: message.author.username,
+    id: member.id,
+    nickname: member.user.username,
   }, {
     uniqueConstraintColumnNames: ['id'],
   })
   return userFactory.update(dbUserId, {
-    nickname: message.author.username,
+    nickname: member.user.username,
     roles: ['854816691544653895'],
     metadata: {
-      oldRoles: userRoles,
+      oldRoles: oldRanks,
     },
   })
 }
