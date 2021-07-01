@@ -17,9 +17,9 @@ export default {
    * */
   raiseReply: (error: string, message: Message): void => {
     const embed = new MessageEmbed()
-      .setTitle('Error')
+      .setTitle('Erreur')
       .setColor(0xFF0000)
-      .setDescription(`An error has occurred : ${error}`)
+      .setDescription(`Une erreur est survenue : ${error}`)
       .setTimestamp()
 
     message.reply({ embed }).then(m => m.delete({ timeout: 15000 }))

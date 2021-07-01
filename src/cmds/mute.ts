@@ -9,9 +9,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { CommandEntity } from '@ustar_travel/discord-bot'
 import { env } from '@materya/carbon'
-import { Message } from 'discord.js'
-import { errors } from '../core'
-import { CommandAccess } from '../helpers'
+import { Message, MessageMentions } from 'discord.js'
+import { time } from 'cron'
+import { Bot, errors } from '../core'
+import { CommandAccess, dbHelper } from '../helpers'
 
 type Args = readonly string[]
 
@@ -22,7 +23,13 @@ const run = (
   const accessAllowed = CommandAccess.checkPermission(message.author, 'mod', message)
   if (!accessAllowed) return
   try {
-    // incoming
+    dbHelper.savingRolesBeforeMute(message)
+    const mutedUser = message.mentions.users.first()
+    const [user, timer, reason] = args
+    console.log(user, timer, reason)
+    const getMutedUser = message.guild
+      ?.members.cache.find(u => u.id === mutedUser?.id)
+    getMutedUser?.roles.remove(getMutedUser.roles.cache)
   } catch (e) {
     errors.raiseReply(e, message)
   }
@@ -33,7 +40,7 @@ const command: CommandEntity<string> = {
   desc: 'Vous permet de rendre muet un utilisateur',
   args: [],
   mandatoryArgs: true,
-  usage: 'mute [utilisateur] [durée]',
+  usage: 'mute [utilisateur] [durée] [warning]',
   examples: ['mute @utilisateur 1h', 'mute @utilisateur 7d'],
   run,
 }

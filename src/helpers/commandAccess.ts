@@ -7,12 +7,10 @@
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { env } from '@materya/carbon'
-
 import { Message, User } from 'discord.js'
 import { errors } from '../core'
 
 export type CommandRole = 'dev' |'owner' | 'admin' | 'mod'
-export type AllowedRoles = Array<CommandRole>
 
 export const allowedRolesText = {
   dev: 'au développeur du bot',

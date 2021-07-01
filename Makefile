@@ -68,11 +68,11 @@ clean-all: clean clean-modules
 	$(DC) down -v --remove-orphans --rmi local
 
 .PHONY: start
-start: $(ENVFILE) $(LOCALCONFIG) $(MODULES)
+start: $(ENVFILE) $(MODULES)
 	$(DC) up
 
 .PHONY: test
-test: $(ENVFILE)  $(MODULES)
+test: $(ENVFILE) $(MODULES)
 	$(PM) t
 
 coverage:
@@ -107,12 +107,12 @@ dbdown:
 
 .PHONY: dbconnect
 dbconnect:
-	$(DC) run $(DCFLAGS) psql $(DATABASE_URL)_$(NODE_ENV)
+	$(DC) run $(DCFLAGS) psql db
 
 .PHONY: dbrestore
 dbrestore: dump.sql dbdown
 	$(DC) run $(DCFLAGS) \
-		/bin/sh -c "cat dump.sql | psql $(DATABASE_URL)_$(NODE_ENV)"
+		/bin/sh -c "cat dump.sql | psql db"
 	$(PM) run db:build:migrations
 
 .PHONY: shell

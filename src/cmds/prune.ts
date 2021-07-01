@@ -7,7 +7,7 @@
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { CommandEntity } from '@ustar_travel/discord-bot'
-import { Message, TextChannel } from 'discord.js'
+import { InviteOptions, Message, TextChannel } from 'discord.js'
 import { errors } from '../core'
 import { CommandAccess } from '../helpers'
 
@@ -24,7 +24,7 @@ const run = async (
     const [num] = args
     const amount = Number.parseInt(String(num), 10) ?? 1
     const finalAmount = amount > 50 ? 50 : amount
-    const channel = message.channel as TextChannel
+    const channel = <TextChannel>message.channel
     channel.bulkDelete(finalAmount).then(async () => {
       await channel
         .send(`*<@${message.author.id}>, ${finalAmount} messages ont été supprimés.*`)

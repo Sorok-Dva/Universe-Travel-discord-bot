@@ -8,3 +8,5 @@
  *************************************************************************** */
 export * as CommandAccess from './commandAccess'
 export * as CommandArgs from './commandArgs'
+export * as dbHelper from './db'
+export * as logger from './logger'

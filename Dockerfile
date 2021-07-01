@@ -1,31 +1,18 @@
 ARG APT_FLAGS="-y -qq --no-install-recommends --no-install-suggests"
 
-FROM node:15-buster-slim as base
-
-ARG APT_FLAGS
-ARG COMMON_PACKAGES="\
-  musl-dev \
-"
-RUN mkdir -p /usr/share/man/man1
-RUN apt-get update ${APT_FLAGS} \
-  && apt-get install ${APT_FLAGS} ${COMMON_PACKAGES} \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-RUN ln -s /usr/lib/x86_64-linux-musl/libc.so /lib/libc.musl-x86_64.so.1
-
-ARG BASE_IMAGE=node:15-buster-slim
-
-FROM base as packages
+FROM node:15-buster-slim as packages
 
 WORKDIR /build
 
 ARG APT_FLAGS
 ARG BUILD_PACKAGES="\
+  wget \
   curl \
   g++ \
   gnupg2 \
   make \
+  python3 \
+  ffmpeg \
 "
 
 RUN apt-get update ${APT_FLAGS} \
@@ -51,7 +38,8 @@ ARG APT_FLAGS
 ARG DEV_PACKAGES="\
   postgresql-client-12 \
 "
-RUN curl -sL https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
+RUN wget --no-check-certificate --quiet https://www.postgresql.org/media/keys/ACCC4CF8.asc
+RUN apt-key add ACCC4CF8.asc
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main" > /etc/apt/sources.list.d/pgdg.list
 RUN apt-get update ${APT_FLAGS} \
   && apt-get install ${APT_FLAGS} ${DEV_PACKAGES} \

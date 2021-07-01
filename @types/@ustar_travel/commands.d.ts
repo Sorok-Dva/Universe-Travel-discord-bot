@@ -3,7 +3,7 @@
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
  *  | || |_  __) |            Created: 2021/06/21 9:48 PM AM by Сорок два
- *  |__   _|/ __/             Updated: 2021/06/25 8:41 PM by Сорок два
+ *  |__   _|/ __/             Updated: 2021/07/01 12:31 AM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { Client, Message } from 'discord.js'
@@ -36,6 +36,9 @@ declare module '@ustar_travel/discord-bot' {
     | 'reload'
     | 'mute'
     | 'unmute'
+    | 'warn'
+    | 'welcome'
+    | 'bye'
     | 'iss'
 
   /**
@@ -51,7 +54,7 @@ declare module '@ustar_travel/discord-bot' {
     run: (
       message: Message,
       args: readonly Args[],
-      opts: {
+      opts?: {
         client: Client
         config: BotOptions
       },

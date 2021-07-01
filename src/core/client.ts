@@ -16,7 +16,7 @@ import {
 import { Client, Message } from 'discord.js'
 import { errors } from '.'
 import { ConnectionHandler } from '../handlers'
-import { CommandArgs } from '../helpers'
+import { CommandArgs, dbHelper } from '../helpers'
 
 /**
  * Bot Client Class that retrieve djs collections after login and listen events
@@ -48,7 +48,7 @@ export default class BotClient extends Client {
   constructor (config: BotOptions) {
     super()
     console.log('starting bot initialization...')
-    this.commands = [
+    this.commands = [ // don't forget to add your new commands here or it wont run
       'debug',
       'invit',
       'say',
@@ -56,6 +56,10 @@ export default class BotClient extends Client {
       'ping',
       'prune',
       'reload',
+      'mute',
+      'unmute',
+      'welcome',
+      'bye',
     ]
     this.config = config
     this.prefix = config.prefix
@@ -145,7 +149,7 @@ export default class BotClient extends Client {
 
       const isValidCommand = (
         command: string,
-      ): command is Command => commands.includes(command as Command)
+      ): command is Command => commands.includes(<Command>command)
 
       if (isValidCommandString(message.content)) {
         const results = message.content.match(/^!([\w]+)(.*)$/)
@@ -178,6 +182,7 @@ export default class BotClient extends Client {
           }
         }
       }
+      await dbHelper.userUpdate(message)
     } catch (err) {
       errors.raiseReply(err, message)
     }
