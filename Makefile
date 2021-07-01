@@ -69,6 +69,7 @@ clean-all: clean clean-modules
 
 .PHONY: start
 start: $(ENVFILE) $(MODULES)
+	$(PM) run db
 	$(DC) up
 
 .PHONY: test
@@ -96,13 +97,8 @@ db:
 	$(PM) run db
 	$(PM) run db:seeds:up
 
-.PHONY: dbclean
-dbclean:
-	$(PM) run db:build:drop
-
 .PHONY: dbdown
 dbdown:
-	$(PM) run db:build:drop
 	$(PM) run db:build:create
 
 .PHONY: dbconnect

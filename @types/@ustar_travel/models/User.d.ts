@@ -27,6 +27,9 @@ declare module '@ustar_travel/discord-bot' {
     can_participate_giveaway: boolean
 
     /** Metadata */
-    metadata: Record<string, unknown>
+    metadata: {
+      oldRoles?: string[]
+      sanctions?: Record<string, unknown>
+    }
   }
 }

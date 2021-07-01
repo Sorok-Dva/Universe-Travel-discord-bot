@@ -28,104 +28,56 @@ const run = async (
   const accessAllowed = CommandAccess.checkPermission(message.author, 'mod', message)
   if (!accessAllowed) return
   try {
-    const [user, ...brutReason] = args
+    const [_u, timer, ...brutReason] = args
     const reason = brutReason.join(' ')
     const userId = <string>message.mentions.users.first()?.id
     if (!userId) {
       errors.raiseReply('Veuillez désigmer un utilisateur valide (@pseudo#000)', message)
       return
     }
-    const waitingChannel = <TextChannel>Bot.client.channels.cache
+    const mainChannel = <TextChannel>Bot.client.channels.cache
       .find(c => c.id === '760062418167922717')
-    const userToMute = <GuildMember>waitingChannel?.members
+    const userToMute = <GuildMember>mainChannel?.members
       .find(u => u.id === userId)
-    
+
     if (userToMute) {
-      await dbHelper.savingRolesBeforeMute(userToMute, reason)
+      await dbHelper.savingRolesBeforeMute(userToMute, timer, reason)
     }
-    const roleRemovals = [
-      <Role>message.guild?.roles.cache
-        .get('859191061712601129'),
-      <Role>message.guild?.roles.cache
-        .get('854813324377194496'),
-      <Role>message.guild?.roles.cache
-        .get('854813976450170941'),
-    ]
-    
-    roleRemovals.map(r => )
-    const removeRole = <Role>message.guild?.roles.cache
-      .get('760062417932779523')
-    
 
-    if (welcomedUser?.roles.cache.has(removeRole?.id)) {
-      welcomedUser.roles.remove(removeRole)
-        .catch(error => errors.raiseReply(error, message))
-      welcomedUser.roles.add(upgradeRole)
-        .catch(error => errors.raiseReply(error, message))
-      // Send message to general staff to invite them interact with the new user
-      const embedStaff = new MessageEmbed()
-        .setTitle(`Entretien terminé pour @${welcomedUser.displayName}`)
-        .setColor('GREEN')
-        .setDescription(`<a:megaphone:853041585385635850> @everyone: <@${message.author.id}> a passé l'entretien avec <@${welcomedUser.id}> qui **s'est visiblement bien passé** !
-        ${remark ? `<@${message.author.id}> a laisser une note sur sur cet entretion : **${remark}**` : ''}
-        **On compte sur vous pour intégrer <@${welcomedUser.id}> dans le tchat général !**
-      `)
-        .setTimestamp()
-        .setAuthor(message.author.username)
+    const embedStaff = new MessageEmbed()
+      .setTitle(`@${userToMute.displayName} vient d'être mute`)
+      .setColor('RED')
+      .setDescription(`<@${message.author.id}> vient de rendre aphone <@${userToMute.id}> pour le motif suivant : \n\n **${reason}**\n
+      et pour la durée suivante: **${timer}**`)
+      .setFooter(message.author.username)
+      .setTimestamp()
 
-      // Send a message into general tchat to try create activity between members
-      const embedGeneral = new MessageEmbed()
-        .setTitle(`Faites une standing ovation pour @${welcomedUser.displayName}`)
-        .setColor('BLUE')
-        .setDescription(`<a:megaphone:853041585385635850> @everyone: On accueuil chaleureusement <@${message.author.id}> qui vient de passer son entretient et que le staff vient de valider !
-        **On compte sur vous pour l'aider à s'intégrer et à faire connaissance avec lui !**
-      `)
-        .setTimestamp()
+    // send a dm to the user to explains what to do know he's accepted
+    Bot.client.users.fetch(userToMute.id, false)
+      .then(u => {
+        u.send(`🤐 **Oops, vous venez d'être mute**
 
-      const general = '853762190010875934'
-      const generaChannel = <TextChannel>Bot.client.channels.cache
-        .find(c => c.id === general)
-      await generaChannel.send({ embed: <MessageEmbed>embedGeneral })
+        > Cela signifie que tu as enfreins une des lois de la charte. Nous te rappelons que nous aspirons à avoir une communauté adulte et soudée. Bienveillance et respect donc donc les motres mots si tu veux pouvoir rester.
 
-      // send a dm to the user to explains what to do know he's accepted
-      Bot.client.users.fetch(welcomedUser.id, false).then(u => {
-        u.send(`<a:stockrocket:853042246974701608> **Bienvenue à toi ${welcomedUser.nickname} dans notre communauté de passionné(e)s d'astronomie et de sciences**
+        > Tu as été mute pour la raison suivante : **${reason}**
 
-        > Tu as passé avec brio ton entretien et nous sommes très heureux de t'accueillir de notre communauté.
-
-        > Maintenant que le staff t'as validait, il te reste quelques étapes avant d'avoir un accès total au serveur, il te suffit de prendre connaissance de la charte et de la signer via role-react et c'est tout !
-
-        _Nous espérons sincèrement construire quelque chose de super avec vous, par le biais des events, des tutos, de débats, des news, ça va prendre un peu de temps avant que la machine se mette en route, mais si tu nous laisses une chance tu ne seras pas déçu_ :wink: :vulcan:'`)
+        _Nous espérons sincèrement que cette sanction t'as fait prendre conscience du type de comportement que nous n'attendons pas sur **U*Travel**_`)
       })
 
-      // default logger in logs Channel
-      await logger.event(embedStaff, true)
-      // todo improve this
-      const dbUserId = await userFactory.upsert({
-        id: welcomedUser.id,
-        nickname: welcomedUser.user.username,
-      }, {
-        uniqueConstraintColumnNames: ['id'],
-      })
-      await userFactory.update(dbUserId, {
-        nickname: welcomedUser.user.username,
-        roles: [upgradeRole.id],
-      })
-    } else {
-      console.error('unable to use welcome command, the user doesn\'t have the default role')
-    }
+    // default logger in logs Channel
+    await logger.event(embedStaff, true)
   } catch (e) {
     errors.raiseReply(e, message)
   }
 }
 
 const command: CommandEntity<string> = {
-  title: 'welcome',
-  desc: 'Vous permet de donner le premier accès au serveur à un nouvel arrivant (réservé aux mod et +)',
+  title: 'mute',
+  desc: 'Permet de rendre aphone un membre et lui empêcher toute intéraction sur le serveur (réservé aux mod et +)',
   args: [],
   mandatoryArgs: true,
-  usage: 'welcome [utilisateur] [remarque] ',
-  examples: ['welcome @utilisateur', 'welcome @utilisateur Super enthousiate et très sympa'],
+  usage: 'mute [utilisateur] [durée] [motif] ',
+  examples: ['mute @utilisateur', 'mute @utilisateur 1h Langage Abusif', 'mute @utilisateur 24h Mauvaise Intention'],
   run,
 }
 

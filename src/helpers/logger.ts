@@ -15,18 +15,18 @@ import { Bot } from '../core'
 // eslint-disable-next-line import/prefer-default-export
 export const event = async (
   embed: MessageEmbed | string,
-  chanStaff = false,
+  muteLogged = false,
 ): Promise<void> => {
-  const chanStaffId = '760062418763776041'
-  const logChanel = '760066896942202892'
+  const muteLogsChannel = '860216944351117342'
+  const mainLogChanel = '760066896942202892'
 
   const logChannel = <TextChannel>Bot.client.channels.cache
-    .find(c => c.id === logChanel)
+    .find(c => c.id === mainLogChanel)
   await logChannel.send({ embed: <MessageEmbed>embed })
 
-  if (chanStaff) {
+  if (muteLogged) {
     const staffChannel = <TextChannel>Bot.client.channels.cache
-      .find(c => c.id === chanStaffId)
+      .find(c => c.id === muteLogsChannel)
     await staffChannel.send({ embed: <MessageEmbed>embed })
   }
 }
