@@ -13,8 +13,9 @@ import { userRepo } from '../db/repositories'
 
 export const userUpdate = async (
   message: Message,
+  member?: GuildMember,
 ): Promise<Entity<User>> => {
-  const userRoles = message.member?.roles.cache.map(r => r.id)
+  const userRoles = (member || message.member)?.roles.cache.map(r => r.id)
   const dbUserId = await userFactory.upsert({
     id: message.author.id,
     nickname: message.author.username,

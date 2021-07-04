@@ -99,16 +99,22 @@ db:
 
 .PHONY: dbdown
 dbdown:
-	$(PM) run db:build:create
+	$(PM) run db:init:build:create
 
-.PHONY: dbconnect
-dbconnect:
+.PHONY: dbshell
+dbshell:
 	$(DC) run $(DCFLAGS) psql db
 
 .PHONY: dbrestore
 dbrestore: dump.sql dbdown
 	$(DC) run $(DCFLAGS) \
 		/bin/sh -c "cat dump.sql | psql db"
+	$(PM) run db:build:migrations
+
+.PHONY: dbdump
+dbdump: shell
+	$(DC) run $(DCFLAGS) \
+		/bin/sh -c "pg_dump db > dump.sql"
 	$(PM) run db:build:migrations
 
 .PHONY: shell

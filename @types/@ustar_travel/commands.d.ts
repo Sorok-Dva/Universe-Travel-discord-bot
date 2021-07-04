@@ -40,6 +40,7 @@ declare module '@ustar_travel/discord-bot' {
     | 'welcome'
     | 'bye'
     | 'iss'
+    | 'roleseparator'
 
   /**
    * Command Entity Interface
@@ -48,8 +49,8 @@ declare module '@ustar_travel/discord-bot' {
     title: CommandName
     desc: string
     usage: string
-    args: readonly Args[]
     mandatoryArgs: boolean
+    args?: readonly Args[]
     examples: string[]
     run: (
       message: Message,

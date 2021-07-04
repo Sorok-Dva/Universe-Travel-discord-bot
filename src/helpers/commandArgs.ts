@@ -17,9 +17,10 @@ export const validate = (
   message: Message,
 ): boolean => {
   const isMandatory = command.mandatoryArgs
-  const allowedArgs = [...command.args]
+  const allowedArgs = command.args ? [...command.args] : null
   let raiseError = false
 
+  if (allowedArgs === null) return true
   // dynamic args trick, should find a better design
   if (isMandatory && allowedArgs.length === 0) allowedArgs.push('')
 

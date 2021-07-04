@@ -60,6 +60,7 @@ export default class BotClient extends Client {
       'unmute',
       'welcome',
       'bye',
+      'roleseparator',
     ]
     this.config = config
     this.prefix = config.prefix
