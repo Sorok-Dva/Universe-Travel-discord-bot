@@ -17,6 +17,7 @@ export const allowedRolesText = {
   owner: 'au propriétaire du server',
   admin: 'aux administrateurs',
   mod: 'aux modérateurs',
+  vol: 'aux volontaires (rédacteurs, médiateurs, animateurs etd)',
 }
 
 export const checkPermission = (
@@ -33,7 +34,7 @@ export const checkPermission = (
 
   if (user.id === serverOwner || user.id === botOwner) allowed = true // server and bot owner haves full permissions
   if (adminRoles.includes(user.id)) allowed = true // users designated as admins role can bypass this check
-  if (role === 'mod' && modsRole.includes(user.id)) allowed = true
+  if (role === 'mod' && modsRole.includes(user.id)) allowed = true // @todo doubt about this 🧐
 
   if (!allowed) errors.raiseReply(`Cette commande est réservée ${allowedRolesText[role]}.`, message)
 

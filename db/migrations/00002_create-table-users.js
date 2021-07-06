@@ -8,6 +8,8 @@ const up = sql => sql`
     message_count NUMERIC NOT NULL DEFAULT 0,
     bp INTEGER NOT NULL DEFAULT 4200,
     can_participate_giveaway BOOLEAN NOT NULL DEFAULT FALSE,
+    staff BOOLEAN NOT NULL DEFAULT FALSE,
+    muted BOOLEAN NOT NULL DEFAULT FALSE,
     metadata JSON NOT NULL DEFAULT '{}',
 
     created_at TIMESTAMP DEFAULT current_timestamp,

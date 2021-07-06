@@ -69,6 +69,7 @@ clean-all: clean clean-modules
 
 .PHONY: start
 start: $(ENVFILE) $(MODULES)
+	make
 	$(PM) run db
 	$(DC) up
 

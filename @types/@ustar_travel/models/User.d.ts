@@ -26,6 +26,12 @@ declare module '@ustar_travel/discord-bot' {
     /** Self-explanatory, the giveaway will only be for active members and not leechers */
     can_participate_giveaway: boolean
 
+    /** Self-explanatory */
+    staff: boolean
+
+    /** Self-explanatory */
+    muted: boolean
+
     /** Metadata */
     metadata: {
       oldRoles?: string[]

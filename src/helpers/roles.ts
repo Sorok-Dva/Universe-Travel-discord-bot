@@ -16,12 +16,12 @@ export const volunteersRole = [
   '859472389683675177', // Recrue Staff
 ]
 
-const specialUserRole = [
+export const specialUserRole = [
   '760062417941692436', // Membre honoré
   '760062417932779529', // Le Parrain de l'Espace
 ]
 
-const levelUpRoles = [
+export const levelUpRoles = [
   '854816696811913267', // Membre honorable (level 21, evolving role)
   '859771743195496468', // Membre d'équipage (level 10, evolving role)
   '854813976450170941', // Membre d'équipage (level 8, evolving role)
@@ -50,4 +50,14 @@ export const basicRole = [
   '854816691544653895', // Aphone (mute)
   '859849160659042335', // Touriste spatial (default when validated)
   '760062417932779523', // Visiteur spatial (unvalidated member)
+]
+
+export const separatorsRoles = [
+  '861333528938545172', // Staff Separator
+  '861333845378990110', // Voluntaries/recruits separator
+  '861333842333138975', // Special User Role separator
+  '861333838294810684', // Level Up Role Separator
+  '861333292379668532', // Projects separator (e.g stationers)
+  '861333418867556442', // Notifs / Access role separators
+  '861333396285554699', // Mute / Default role Separator
 ]

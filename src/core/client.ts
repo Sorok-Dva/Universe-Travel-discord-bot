@@ -49,6 +49,7 @@ export default class BotClient extends Client {
     super()
     console.log('starting bot initialization...')
     this.commands = [ // don't forget to add your new commands here or it wont run
+      'rs',
       'debug',
       'invit',
       'say',
@@ -60,7 +61,7 @@ export default class BotClient extends Client {
       'unmute',
       'welcome',
       'bye',
-      'roleseparator',
+      'color',
     ]
     this.config = config
     this.prefix = config.prefix
@@ -141,6 +142,8 @@ export default class BotClient extends Client {
   ): Promise<void> {
     try {
       if (!message.guild || message.channel.type === 'dm' || message.author.bot) return
+      await dbHelper.userUpdate(message)
+  
       const { commands, prefix } = this
 
       const isValidCommandString = (
@@ -183,7 +186,6 @@ export default class BotClient extends Client {
           }
         }
       }
-      await dbHelper.userUpdate(message)
     } catch (err) {
       errors.raiseReply(err, message)
     }

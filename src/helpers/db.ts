@@ -6,10 +6,12 @@
  *  |__   _|/ __/             Updated: 2021/06/27 5:24 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
+import { env } from '@materya/carbon'
 import { GuildMember, Message, Role } from 'discord.js'
 import { Entity, User } from '@ustar_travel/discord-bot'
 import { userFactory } from '../db/factories'
 import { userRepo } from '../db/repositories'
+import { rolesHelper } from '.'
 
 export const userUpdate = async (
   message: Message,
@@ -35,6 +37,10 @@ export const userUpdate = async (
     roles: userRoles,
     message_count: user.message_count += 1,
   })
+
+  // Double-Security for the mute system
+  if (finalUser.muted) await message.delete({ reason: 'muted' })
+
   return finalUser
 }
 
@@ -45,23 +51,17 @@ export const savingRolesBeforeMute = async (
 ): Promise<Entity<User>> => {
   const oldRanks: string[] = []
   const necessaryRemoveRole = [
-    '760062417932779523', // Visiteur Spatial
-    '859191061712601129', // Aspirant Voyageur
-    '854813324377194496', // Voyageur Initié
-    '854814002563776532', // Voyageur confirmé
-    '854814002563776532', // Aspirant Membre
-    '854813976450170941', // Aspirant Membre
-    '859771743195496468', // Membre d'équipage
-    '854816696811913267', // Membre Honorable
-    '760062417932779529', // Parrain
-    '760062417941692436', // Membre Honoré
+    ...rolesHelper.levelUpRoles,
+    ...rolesHelper.specialUserRole,
+    ...rolesHelper.volunteersRole,
+    ...rolesHelper.basicRole.filter(r => r !== env.get('MUTE_ROLE')),
   ]
   member?.roles.cache.map(r => {
     if (necessaryRemoveRole.includes(r.id)) {
       oldRanks.push(r.id)
-      member.roles.remove(r, 'Mute Temporaire - Raison : Nécessite la suppresion de tous les roles pour être fonctionnel')
+      member.roles.remove(r, 'Mute, nécessite la suppresion de tous les roles pour être fonctionnel')
     }
-    member.roles.add('854816691544653895', `Mute Temporaire - Raison : ${reason}`)
+    member.roles.add(env.get('MUTE_ROLE'), `Mute Temporaire de ${timer} - Raison : ${reason}`)
     return r
   })
 
@@ -74,7 +74,8 @@ export const savingRolesBeforeMute = async (
 
   return userFactory.update(dbUserId, {
     nickname: member.user.username,
-    roles: ['854816691544653895'],
+    roles: [env.get('MUTE_ROLE')],
+    muted: true,
     metadata: {
       oldRoles: oldRanks,
       sanctions: {
@@ -96,7 +97,7 @@ export const reinstituteRoleAfterUnmute = async (
   message: Message,
 ): Promise<Entity<User> | null> => {
   const mutedRole = <Role>message.guild?.roles.cache
-    .get('854816691544653895')
+    .get(env.get('MUTE_ROLE'))
   if (member?.roles.cache.has(mutedRole?.id)) {
     const dbUserId = await userFactory.upsert({
       id: member.id,
@@ -111,13 +112,15 @@ export const reinstituteRoleAfterUnmute = async (
       fields: ['metadata'],
     })).metadata
 
-    await member.roles.remove('854816691544653895', `Fin du mute pour la raison ${reason}`)
+    await member.roles.remove(env.get('MUTE_ROLE'), `Fin du mute pour la raison ${reason}`)
     const unmuteReason = `Fin du mute. ${reason ? `(ou raccourcit pour le motif : ${reason})` : ''}`
+
     oldRoles?.map(r => member.roles.add(r, unmuteReason))
 
     return userFactory.update(dbUserId, {
       nickname: member.user.username,
       roles: <string[]>oldRoles,
+      muted: false,
       metadata: {
         oldRoles,
       },

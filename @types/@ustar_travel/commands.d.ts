@@ -8,6 +8,7 @@
  *************************************************************************** */
 import { Client, Message } from 'discord.js'
 
+// TODO: some code has wipe between pc
 declare module '@ustar_travel/discord-bot' {
 
   /**
@@ -40,7 +41,10 @@ declare module '@ustar_travel/discord-bot' {
     | 'welcome'
     | 'bye'
     | 'iss'
-    | 'roleseparator'
+    | 'nasa'
+    | 'wallpaper'
+    | 'rs'
+    | 'color'
 
   /**
    * Command Entity Interface
