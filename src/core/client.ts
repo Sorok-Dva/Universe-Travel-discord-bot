@@ -62,6 +62,7 @@ export default class BotClient extends Client {
       'welcome',
       'bye',
       'color',
+      'nasa',
     ]
     this.config = config
     this.prefix = config.prefix
@@ -143,7 +144,7 @@ export default class BotClient extends Client {
     try {
       if (!message.guild || message.channel.type === 'dm' || message.author.bot) return
       await dbHelper.userUpdate(message)
-  
+
       const { commands, prefix } = this
 
       const isValidCommandString = (

@@ -7,7 +7,7 @@
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { CommandEntity } from '@ustar_travel/discord-bot'
-import { InviteOptions, Message, TextChannel } from 'discord.js'
+import { Message, TextChannel } from 'discord.js'
 import { errors } from '../core'
 import { CommandAccess } from '../helpers'
 
