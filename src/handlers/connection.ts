@@ -18,7 +18,7 @@ import { NASA } from '../modules'
 const cronJobs = (): void => {
   const cronJobsList = [
     new CronJob('0 * * * *', () => Bot.setActivity()), // Set Bot Activity every minute
-    new CronJob('0 12 * * *', () => {
+    new CronJob('0 12 * * *', async () => {
       const embed = await NASA.apod()
 
       const apodChan = '853762190010875934'
