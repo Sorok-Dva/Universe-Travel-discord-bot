@@ -9,15 +9,24 @@
 
 import { CronJob } from 'cron'
 import { sql } from 'slonik'
+import {TextChannel } from 'discord.js'
 import { Bot, errors } from '../core'
 import { psql } from '../connectors'
+import { NASA } from '../modules'
 
 // all cron job goes here
 const cronJobs = (): void => {
   const cronJobsList = [
     new CronJob('0 * * * *', () => Bot.setActivity()), // Set Bot Activity every minute
-  ]
+    new CronJob('0 12 * * *', () => {
+      const embed = await NASA.apod()
 
+      const apodChan = '853762190010875934'
+      const channel = <TextChannel>Bot.client.channels.cache
+        .find(c => c.id === apodChan)
+      await channel.send({ embed })
+    }), // NASA APOD
+  ]
   cronJobsList.map(job => job.start())
 }
 

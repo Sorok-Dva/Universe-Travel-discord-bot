@@ -12,16 +12,7 @@ import { NASA } from '../modules'
 import { errors } from '../core'
 
 const run = async (message: Message): Promise<void> => {
-  const data = await NASA.apod()
-  const embed = new MessageEmbed()
-    .setColor('RANDOM')
-    .setTitle(data.title)
-    .setDescription(`<@&853036396205834261>, ${data.explanation}`)
-    .setImage(data.hdurl)
-    .addField('Copyright', data.copyright, true)
-    .addField('Date:', data.date, true)
-    .setFooter('Récupérée via l\'api de la NASA')
-    .setTimestamp()
+  const embed = await NASA.apod()
 
   message.channel.send({ embed })
     .catch(err => errors.raiseReply(err, message))
