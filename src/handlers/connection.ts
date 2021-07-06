@@ -21,7 +21,7 @@ const cronJobs = (): void => {
     new CronJob('0 12 * * *', async () => {
       const embed = await NASA.apod()
 
-      const apodChan = '853762190010875934'
+      const apodChan = '852171012828299264'
       const channel = <TextChannel>Bot.client.channels.cache
         .find(c => c.id === apodChan)
       await channel.send({ embed })

@@ -7,24 +7,48 @@
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { CommandEntity } from '@ustar_travel/discord-bot'
-import { Message, MessageEmbed } from 'discord.js'
+import { Message } from 'discord.js'
 import { NASA } from '../modules'
 import { errors } from '../core'
+import { CommandAccess } from '../helpers'
 
-const run = async (message: Message): Promise<void> => {
-  const embed = await NASA.apod()
+type Args = readonly string[]
+type AllowedModules = 'apod' | 'image'
+type AllowedSubmodules = Record<AllowedModules, string[]>
 
-  message.channel.send({ embed })
-    .catch(err => errors.raiseReply(err, message))
+const allowedModules: AllowedModules[] = ['apod', 'image']
+const allowedSubmodule: AllowedSubmodules = {
+  apod: ['date'],
+  image: ['date'],
+}
+const run = async (message: Message, args: Args): Promise<void> => {
+  const [module, submodule] = args
+
+  if (!allowedModules.includes(<AllowedModules>module)) return
+  if (submodule
+    && !allowedSubmodule[<AllowedModules>module].includes(submodule)) return
+
+  switch (module) {
+    case 'apod': {
+      const accessAllowed = CommandAccess.checkPermission(message.author, 'admin', message)
+      if (!accessAllowed) return
+
+      const embed = await NASA.apod()
+      console.log(embed)
+      await message.channel.send({ embed })
+        .catch(err => errors.raiseReply(err, message))
+    } break
+    default:
+  }
 }
 
 const command: CommandEntity<string> = {
   title: 'nasa',
   desc: 'Vous donne des informations relatives à la NASA',
   args: [],
-  mandatoryArgs: false,
+  mandatoryArgs: true,
   usage: 'nasa',
-  examples: [],
+  examples: ['nasa apod (réservé aux admins)'],
   run,
 }
 
