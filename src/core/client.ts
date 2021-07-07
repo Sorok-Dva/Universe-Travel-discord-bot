@@ -1,55 +1,53 @@
-/** ***************************************************************************
- *  client.ts
+/*******************************************************************************
+ *  core/client.ts
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
- *  | || |_  __) |            Created: 2021/06/20 12:36 AM by Сорок два
- *  |__   _|/ __/             Updated: 2021/06/26 1:32 PM by Сорок два
+ *  | || |_  __) |                         Created: 2021/06/20 12:36 AM
+ *  |__   _|/ __/                          Updated: 2021/06/20 9:42 PM
  *     |_| |_____|U*Travel
- *************************************************************************** */
-import {
-  BotOptions,
-  Command,
-  Commands,
-  CommandInstance,
-  CommandString,
-} from '@ustar_travel/discord-bot'
-import { Client, Message } from 'discord.js'
+ /******************************************************************************/
+import { BotOptions, Command, Commands } from '@ustar_travel/discord-bot'
+import { Client, ClientUser, Guild, Message, } from 'discord.js'
 import { errors } from '.'
-import { ConnectionHandler } from '../handlers'
-import { CommandArgs, dbHelper } from '../helpers'
+import { ConnectionHandler } from '../handlers';
 
 /**
  * Bot Client Class that retrieve djs collections after login and listen events
  *
- * @class
+ * @Class
  * */
 export default class BotClient extends Client {
+  public get Client(): Client | null {
+    return this.client
+  }
   /* BotOptions that contains tokens, users ids or prefix */
   private readonly config: BotOptions
-
+  
   /* The Discord.js Client Object */
-  public client: Client
-
+  private client: Client | null
+  
+  /* The main guild (this bot is not configured for a multi-servers but specially only one)*/
+  public guild: Guild | null
+  
   /* The prefix use to trigger the commands */
   public prefix: string
-
+  
   /* List of all available commands */
   public commands: Commands
-
-  /* Streaming State of the bot, he's streaming sound in VoiceChannel ? */
+  
+  /* Streaming State of the bot, he's streaming sound in VoiceChannel ?*/
   public streaming: boolean
-
-  /* ActivityTick help to define the new activity to set in the cronjob */
+  
+  /* ActivityTick help to define the new activity to set in the cronjob*/
   public activityTick: number
-
+  
   /* List of bot activities */
   public activities: Array<string>
-
-  constructor (config: BotOptions) {
+  
+  constructor(config: BotOptions) {
     super()
     console.log('starting bot initialization...')
-    this.commands = [ // don't forget to add your new commands here or it wont run
-      'rs',
+    this.commands = [
       'debug',
       'invit',
       'say',
@@ -57,135 +55,102 @@ export default class BotClient extends Client {
       'ping',
       'prune',
       'reload',
-      'mute',
-      'unmute',
-      'welcome',
-      'bye',
-      'color',
-      'nasa',
     ]
     this.config = config
     this.prefix = config.prefix
-    this.client = new Client()
+    this.client = null
+    this.guild = null
     this.streaming = false
     this.activityTick = 1
-    this.activities = ['les étoiles ✨', 'récupérer des infos passionnantes ! 📰']
+    this.activities = [ 'les étoiles ✨', 'récupérer des infos passionnantes ! 📰' ]
   }
-
+  
   /**
-   * Discord start method that should be used after the initialization of this interface to start the bot
-   *
-   * @function
-   *
-   * @returns Promise<this>
-   * */
-  public async start (): Promise<this> {
-    this.client.once('ready', this.ready)
-    this.client.on('error', console.error)
-    this.client.on('reconnecting', () => console.log('Reconnecting ...'))
-    this.client.on('disconnect', () => console.warn('Disconnected'))
-    this.client.on('shardDisconnect', () => console.warn('shardDisconnect'))
-    this.client.on('shardError', () => console.warn('shardError'))
-    // this.client.on('voiceStateUpdate', this.voiceStateUpdate)
-    this.client.on('message', msg => this.message(msg))
-
-    await this.client.login(this.config.token)
+  * Discord start method thet should be used after the initialization of this interface to start the bot
+  *
+  * @function
+  *
+  * @returns Promise<this>
+  * */
+  public async start(): Promise<this> {
+    const client = new Client()
+    
+    client.once('ready', this.ready)
+    client.on('error', console.error)
+    client.on('reconnecting', () => console.log('Reconnecting ...'));
+    client.on('disconnect', () => console.warn('Disconnected'));
+    client.on('shardDisconnect', () => console.warn('shardDisconnect'));
+    client.on('shardError', () => console.warn('shardError'));
+    client.on('message', (msg) => this.message(
+      msg,
+      this.prefix,
+      this.commands
+    ))
+    
+    await client.login(this.config.token)
+    this.client = client
     return this
   }
-
+  
   /**
-   * Discord ready event
-   *
-   * @function
-   *
-   * @returns this
-   * */
-  public async ready (): Promise<this> {
-    console.log(`Bot ready as ${this.user?.username}`)
-
-    await ConnectionHandler.main()
-
+  * Discord ready event
+  *
+  * @function
+  *
+  * @returns this
+  * */
+  public ready(): this {
+    console.log(`Bot ready as ${ this.user?.username } to help this awesome community !`)
+    
+    ConnectionHandler.main(this)
+    
     return this
   }
-
+  
   /**
-   * Define the bot activity (absolutely fun purpose, base on this.activities
-   *
-   * @function
-   *
-   * @returns Promise<this>
-   * */
-  public async setActivity (): Promise<this> {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    if (!this.client) return new Promise((resolve, reject) => reject(new Error('Empty guild')))
-    const { user } = this.client
+  * Define the bot activity (absolutely fun purpose, base on this.activities
+  *
+  * @function
+  *
+  * @returns Promise<this>
+  * */
+  public async setActivity(): Promise<this> {
+    if (!this.client) return new Promise((resolve, reject) => reject('Empty guild'))
+    const user = this.client.user as ClientUser
     if (!user) return this
     if (this.activityTick === 0) {
-      await user.setActivity(this.activities[0], { type: 'WATCHING' })
+      await user.setActivity(this.activities[0], {type: 'WATCHING'})
       this.activityTick = 1
     } else if (this.activityTick === 1) {
       await user.setActivity(this.activities[1])
       this.activityTick = 0
     }
-
+    
     return this
   }
-
+  
+  
   /**
-   * Discord message event
-   *
-   * @function
-   *
-   * @returns Promise<void>
-   * */
-  public async message (
-    message: Message,
-  ): Promise<void> {
+  * Discord message event
+  *
+  * @methods
+  *
+  * @returns Promise<void>
+  * */
+  public async message(message: Message, prefix: string, commands: Commands): Promise<void> {
     try {
       if (!message.guild || message.channel.type === 'dm' || message.author.bot) return
-      await dbHelper.userUpdate(message)
-
-      const { commands, prefix } = this
-
-      const isValidCommandString = (
-        messageContent: string,
-      ): messageContent is
-        CommandString => messageContent.startsWith(prefix)
-
-      const isValidCommand = (
-        command: string,
-      ): command is Command => commands.includes(<Command>command)
-
-      if (isValidCommandString(message.content)) {
-        const results = message.content.match(/^!([\w]+)(.*)$/)
-        if (results) {
-          const [_, command, ...cmdArgs] = results
-          if (isValidCommand(command)) {
-            try {
-              await message.delete()
-              let commandModule: CommandInstance<typeof command>
-              const module = await import(`../cmds/${command}.ts`)
-              // eslint-disable-next-line prefer-const
-              commandModule = module.default
-
-              const unknownArgs = cmdArgs[0].trim().split(/ +/g).filter(a => a !== '')
-
-              if (!CommandArgs.validate(
-                unknownArgs,
-                commandModule,
-                message,
-              )) return
-
-              const args: typeof commandModule.args = unknownArgs
-              commandModule.run(message, args, {
-                config: this.config,
-                client: this.client,
-              })
-            } catch (e) {
-              errors.log(e)
-            }
-          }
-        }
+      if (!message.content.startsWith(prefix)) return;
+      
+      let args: Array<string> = message.content.slice(prefix.length).trim().split(/ +/g)
+      
+      // @ts-ignore
+      let command: Command = args.shift().toLowerCase()
+      if (commands.includes(command)) {
+        await message.delete()
+        
+        let commandFile = require(`/build/dist/cmds/${ command }.js`)
+        commandFile.run(this.client, message, args, this.config)
       }
     } catch (err) {
       errors.raiseReply(err, message)

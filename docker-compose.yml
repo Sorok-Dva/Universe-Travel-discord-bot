@@ -9,34 +9,16 @@ services:
       target: build
     restart: always
     tty: true
-    command: npm run start
+    command: npm run dev
     volumes:
       - .:/build/
       - node_modules:/build/node_modules
     ports:
-      - "${PORT:-4013}:${PORT:-4042}"
-    depends_on:
-      - db
+      - 3003:3003
+      - 9229:9229
     networks:
       - default
     env_file: .env
-  db:
-    container_name: ustart_travel-discord-bot-db
-    image: postgis/postgis:12-3.0-alpine
-    volumes:
-      - db-data:/var/lib/postgresql
-    ports:
-      - ${DEV_DB_PORT:-4012}:4012
-    env_file: .env
-    networks:
-      - default
-      - localnet
-    environment:
-      PGHOST: ""
-
-networks:
-  localnet:
 
 volumes:
   node_modules:
-  db-data:
