@@ -38,7 +38,6 @@ module.exports = {
         'mocha/no-mocha-arrows': ['off'],
         'mocha/no-setup-in-describe': ['off'],
         'prefer-arrow-callback': ['off'],
-        'import/prefer-default-export': ['off'],
       },
     },
   ],
@@ -121,7 +120,7 @@ module.exports = {
     }],
     'import/no-unresolved': ['error', {
       ignore: [
-        '@ustar_travel/discord-bot$', // local module import
+        '^@cresh/api$', // local module import
         '^@/*', // tsconfig local paths mapping
       ],
     }],

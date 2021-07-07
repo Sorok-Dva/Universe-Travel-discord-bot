@@ -66,6 +66,3 @@ gen
 
 # typescript
 dist
-
-# Local config
-src/config.local

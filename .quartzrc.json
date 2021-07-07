@@ -1,8 +1,0 @@
-{
-  "migrations": {
-    "path": "./db/migrations"
-  },
-  "seeds": {
-    "path": "./db/seeds"
-  }
-}
