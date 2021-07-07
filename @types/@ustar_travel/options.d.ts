@@ -1,11 +1,11 @@
-/*******************************************************************************
- /*  options.d.ts
- /*   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
- /*  | || | |___ \
- /*  | || |_  __) |                         Created: 2021/06/21 9:15 PM
- /*  |__   _|/ __/                          Updated: 2021/06/21 9:31 PM
- /*     |_| |_____|U*Travel
- /******************************************************************************/
+/** ***************************************************************************
+ *  options.d.ts
+ *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
+ *  | || | |___ \
+ *  | || |_  __) |            Created: 2021/06/21 9:15 PM by Сорок два
+ *  |__   _|/ __/             Updated: 2021/06/23 10:20 PM by Сорок два
+ *     |_| |_____|U*Travel
+ *************************************************************************** */
 /**
  * Options typing
  *
@@ -14,10 +14,11 @@
 declare module '@ustar_travel/discord-bot' {
   import { Config } from '@ustar_travel/discord-bot'
   import { HTTPOptions, WebSocketOptions, WSEventType } from 'discord.js'
-  
+
   /**
    * Default Discord.js ClientOptions type
-   * @type ClientOptions
+   *
+   * @typedef ClientOptions
    * */
   export type ClientOptions = {
     apiRequestMethod?: string
@@ -36,10 +37,11 @@ declare module '@ustar_travel/discord-bot' {
     ws?: WebSocketOptions
     http?: HTTPOptions
   };
-  
+
   /**
    * Custom BotOptions type that extends ClientOptions and Config
-   * @type BotOptions
+   *
+   * @typedef BotOptions
    * */
   export type BotOptions = ClientOptions & Config & {
     commandEditableDuration?: number
@@ -47,4 +49,3 @@ declare module '@ustar_travel/discord-bot' {
     invite?: string
   }
 }
-

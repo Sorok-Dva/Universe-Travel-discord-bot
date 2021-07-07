@@ -3,13 +3,37 @@
   "version": "0.0.1a",
   "private": true,
   "author": "Сорок два#0042 <sorokdva.developer@gmail.com>",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/@types/index.d.ts",
   "scripts": {
+    "start": "ts-node src/index.ts",
     "build": "run-p build:*",
     "build:all": "tsc -d",
+    "develop": "tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
     "compile": "rm -r dist; tsc && node --inspect=0.0.0.0 dist/index.js",
     "bin": "ts-node dist/bin",
     "dev": "nodemon -e ts --exec \"npm run compile\"",
-    "start": "ts-node src/index.ts"
+    "db": "run-s db:build:*",
+    "db:init:build:create": "createdb db",
+    "db:build:migrations": "migrate up",
+    "db:seeds:up": "seed up",
+    "db:seeds:down": "seed down",
+    "db:down": "run-s db:down:*",
+    "db:down:seeds": "seed down",
+    "db:down:migrations": "migrate down",
+    "describe": "npm-scripts-info",
+    "release": "standard-version -s",
+    "test": "run-s test:**",
+    "test:ts": "tsc --noEmit",
+    "test:lint": "eslint 'src/**/*.ts'",
+    "coverage": "run-s coverage:*",
+    "coverage:unit": "nyc --silent npm run test:unit",
+    "coverage:report": "nyc report --reporter=lcov --reporter=text",
+    "coverage:codecov": "codecov",
+    "vulnerabilities": "snyk monitor"
   },
   "lint-staged": {
     "src/**/*.ts": [
@@ -17,7 +41,8 @@
     ]
   },
   "dependencies": {
-    "@discordjs/opus": "^0.5.0",
+    "@materya/carbon": "1.9.2",
+    "@materya/quartz": "1.0.0-alpha.13",
     "@types/dotenv": "^6.1.1",
     "@types/node": "^12.7.3",
     "@types/ws": "^6.0.1",
@@ -29,6 +54,7 @@
     "module-alias": "^2.2.0",
     "performance-now": "^2.1.0",
     "slonik": "23.5.4",
+    "slonik-utilities": "^1.8.3",
     "snekfetch": "^3.5.8",
     "systeminformation": "^3.32.1"
   },
@@ -37,10 +63,13 @@
     "@types/cron": "^1.7.2",
     "@types/systeminformation": "^3.54.1",
     "eslint": "^7.28.0",
+    "eslint-config-materya": "7.1.1",
+    "eslint-plugin-mocha": "8.0.0",
     "nodemon": "^1.19.1",
     "npm-run-all": "4.1.5",
+    "nyc": "15.1.0",
     "ts-loader": "^6.0.2",
-    "ts-node": "9.1.1",
+    "ts-node": "^9.1.1",
     "tsc-watch": "4.2.9",
     "tsconfig-paths": "3.9.0",
     "typescript": "4.1.4"
