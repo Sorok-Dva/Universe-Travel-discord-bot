@@ -1,12 +1,14 @@
 #!make
 NAME=discord-bot
 PROJECT=ustar_travel/${NAME}
+BOT_CONTAINER=ustar_travel-discord-bot
 
 PACKAGE_LOCK = package-lock.json
 COVERAGE = .nyc_output coverage
 SRC = src
 DIST = dist
 ENVFILE = .env
+LOCALCONFIG = src/config.local
 MODULES = node_modules
 
 D = docker
@@ -39,11 +41,22 @@ ifneq (,$(wildcard $(ENVFILE)))
 	export $(shell sed 's/=.*//' $(ENVFILE))
 endif
 
-.PHONY: all
-all: clean $(DIST)
+.PHONY: init
+init: env src/config.local build ycinit
 
-$(ENVFILE):
-	cp $(ENVFILE).defaults $(ENVFILE)
+.PHONY: build
+build:
+	$(PM) run build
+
+.PHONY: restart
+restart: stop build db start
+
+.PHONY: env
+env:
+	cp .env.defaults .env
+
+$(LOCALCONFIG):
+	cp -a $(SRC)/config $(LOCALCONFIG)
 
 $(MODULES):
 ifeq (,$(wildcard /.dockerenv))
@@ -68,13 +81,19 @@ clean-all: clean clean-modules
 	$(DC) down -v --remove-orphans --rmi local
 
 .PHONY: start
-start: $(ENVFILE) $(MODULES)
-	make
-	$(PM) run db
+start: $(ENVFILE) $(LOCALCONFIG) $(MODULES) db
 	$(DC) up
 
+.PHONY: stop
+stop:
+	$(DC) down
+
+.PHONY: ycinit
+ycinit: $(ENVFILE) $(LOCALCONFIG)
+	$(DC) exec -it $(BOT_CONTAINER) yc init --no-user-output --cloud-id $(YANDEX_CLOUD_API) --folder-id $(YANDEX_FOLDER_ID)
+
 .PHONY: test
-test: $(ENVFILE) $(MODULES)
+test: $(ENVFILE) $(LOCALCONFIG) $(MODULES)
 	$(PM) t
 
 coverage:
@@ -96,7 +115,6 @@ endif
 .PHONY: db
 db:
 	$(PM) run db
-	$(PM) run db:seeds:up
 
 .PHONY: dbdown
 dbdown:
@@ -113,10 +131,9 @@ dbrestore: dump.sql dbdown
 	$(PM) run db:build:migrations
 
 .PHONY: dbdump
-dbdump: shell
+dbdump:
 	$(DC) run $(DCFLAGS) \
 		/bin/sh -c "pg_dump db > dump.sql"
-	$(PM) run db:build:migrations
 
 .PHONY: shell
 shell:

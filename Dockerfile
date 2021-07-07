@@ -8,6 +8,7 @@ ARG APT_FLAGS
 ARG BUILD_PACKAGES="\
   wget \
   curl \
+  ca-certificates \
   g++ \
   gnupg2 \
   make \
@@ -15,10 +16,14 @@ ARG BUILD_PACKAGES="\
   ffmpeg \
 "
 
+SHELL ["/bin/bash", "-c"]
 RUN apt-get update ${APT_FLAGS} \
   && apt-get install ${APT_FLAGS} ${BUILD_PACKAGES} \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
+
+RUN wget -qO- https://storage.yandexcloud.net/yandexcloud-yc/install.sh | \
+	bash -s -- -a
 
 COPY package*.json ./
 
