@@ -6,10 +6,10 @@
  *  |__   _|/ __/             Updated: 2021/06/25 8:59 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
-
 import { CronJob } from 'cron'
 import { sql } from 'slonik'
-import {TextChannel } from 'discord.js'
+import { MessageEmbed, TextChannel } from 'discord.js'
+import { YandexCron } from '../crons'
 import { Bot, errors } from '../core'
 import { psql } from '../connectors'
 import { NASA } from '../modules'
@@ -18,8 +18,9 @@ import { NASA } from '../modules'
 const cronJobs = (): void => {
   const cronJobsList = [
     new CronJob('0 * * * *', () => Bot.setActivity()), // Set Bot Activity every minute
-    new CronJob('0 12 * * *', async () => {
-      const embed = await NASA.apod()
+    new CronJob('0 */8 * * *', () => YandexCron.reloadToken()), // Regen Yandex IAM key every 8h (expires each 12h)
+    new CronJob('0 10 * * *', async () => {
+      const embed = <MessageEmbed> await NASA.apod({ notif: true })
 
       const apodChan = '852171012828299264'
       const channel = <TextChannel>Bot.client.channels.cache
@@ -29,13 +30,13 @@ const cronJobs = (): void => {
   ]
   cronJobsList.map(job => job.start())
 }
-
 // eslint-disable-next-line import/prefer-default-export
 export async function main (): Promise<void> {
   try {
     await psql.query(sql`SELECT 1`) // ensure the connection is active with database
     console.log('Successfully connected with to the database container')
     await Bot.setActivity()
+    YandexCron.reloadToken()
     await cronJobs()
   } catch (error) {
     errors.log(error)

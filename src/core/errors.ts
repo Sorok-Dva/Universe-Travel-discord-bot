@@ -46,5 +46,5 @@ export default {
    *
    * @param error - Self-explanatory
    */
-  log: (error: Error): void => console.error(error),
+  log: (error: Error | string): void => console.error(error),
 }

@@ -33,7 +33,7 @@ const run = (
     && maxUse <= 100
     && Math.sign(Number(age)) === 1
     && Math.sign(Number(maxUse)) === 1) {
-    const channel = message.guild.channels.cache.get(env.get('ARRIVAL_CHANNEL_ID')) as GuildChannel
+    const channel = message.guild.channels.cache.get(env.get('ARRIVAL_CHAN')) as GuildChannel
     channel.createInvite({
       maxAge,
       maxUse,

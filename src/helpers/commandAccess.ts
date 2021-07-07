@@ -27,8 +27,8 @@ export const checkPermission = (
 ): boolean => {
   const serverOwner = env.get('SERVER_OWNER')
   const botOwner = env.get('BOT_OWNER')
-  const adminRoles = env.get('ADMIN_ROLES_ID')
-  const modsRole = env.get('MOD_ROLES_ID')
+  const adminRoles = env.get('ADMIN_ROLES')
+  const modsRole = env.get('MOD_ROLES')
 
   let allowed = false
 
