@@ -36,7 +36,7 @@ export async function main (): Promise<void> {
     await psql.query(sql`SELECT 1`) // ensure the connection is active with database
     console.log('Successfully connected with to the database container')
     await Bot.setActivity()
-    YandexCron.reloadToken()
+    //    YandexCron.reloadToken()
     await cronJobs()
   } catch (error) {
     errors.log(error)

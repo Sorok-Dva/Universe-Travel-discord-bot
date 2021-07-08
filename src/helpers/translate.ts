@@ -35,8 +35,8 @@ export const translate = async (
             glossaryData: {
               glossaryPairs: [
                 {
-                  sourceText: 'string',
-                  translatedText: 'string',
+                  sourceText: 'Surveyor Hops',
+                  translatedText: 'Surveyor Hops',
                 },
               ],
             },

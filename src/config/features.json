@@ -1,5 +1,6 @@
 {
   "yandex": {
+    "initialized": false,
     "iamKey": ""
   }
 }
