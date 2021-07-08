@@ -18,8 +18,8 @@ Then when you unmute him, he just got back his roles, and he's removed from mute
 
 ### Development environment
 1. Install Docker
-2. Init the project with `make init`
-4. Fill the `.env` file with your own value
+2. Use `make .env`and the `.env` file with your own value (especially the yandex oauth or the make init won't work)
+4. Init the project with `make init`
 5. Use `make start` to start the bot
 6. You can stop with `make stop`
 

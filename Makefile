@@ -1,7 +1,6 @@
-#!make
 NAME=discord-bot
 PROJECT=ustar_travel/${NAME}
-BOT_CONTAINER=ustar_travel-discord-bot
+BOT_CONTAINER=ustar_travel-${NAME}
 
 PACKAGE_LOCK = package-lock.json
 COVERAGE = .nyc_output coverage
@@ -13,7 +12,8 @@ MODULES = node_modules
 
 D = docker
 DC = docker-compose
-DCFLAGS = --rm bot
+DNAME = discord-bot
+DCFLAGS = --rm $(DNAME)
 
 SED ?= sed
 UNAME_S = $(shell uname -s)
@@ -41,8 +41,12 @@ ifneq (,$(wildcard $(ENVFILE)))
 	export $(shell sed 's/=.*//' $(ENVFILE))
 endif
 
+$(ENVFILE):
+	cp $(ENVFILE).defaults $(ENVFILE)
+
 .PHONY: init
-init: env src/config.local build ycinit
+init: .env src/config.local build
+	echo "Project initiated, please read README.md file to complete your .env value then execute make ycinit"
 
 .PHONY: build
 build:
@@ -90,7 +94,7 @@ stop:
 
 .PHONY: ycinit
 ycinit: $(ENVFILE) $(LOCALCONFIG)
-	$(DC) exec -it $(BOT_CONTAINER) yc init --no-user-output --cloud-id $(YANDEX_CLOUD_API) --folder-id $(YANDEX_FOLDER_ID)
+	$(DC) exec -it $(BOT_CONTAINER) bash "yc init --no-user-output --token $(YANDEX_OAUTH) --cloud-id $(YANDEX_CLOUD_API) --folder-id $(YANDEX_FOLDER_ID)"
 
 .PHONY: test
 test: $(ENVFILE) $(LOCALCONFIG) $(MODULES)
@@ -132,9 +136,12 @@ dbrestore: dump.sql dbdown
 
 .PHONY: dbdump
 dbdump:
-	$(DC) run $(DCFLAGS) \
-		/bin/sh -c "pg_dump db > dump.sql"
+	$(DC) run /bin/sh -c "pg_dump db > dump.sql"
 
 .PHONY: shell
 shell:
-	$(DC) run $(DCFLAGS) bash
+	$(DC) run $(DNAME) bash
+
+PHONY: dcbuild
+dcbuild:
+	$(DC) run $(DCFLAGS) npm run build

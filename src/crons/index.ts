@@ -7,4 +7,4 @@
  *     |_| |_____|U*Travel
  *************************************************************************** */
 
-export * as YandexCron from './yandex'
+export * as YandexCron from '../connectors/yandex/yandex'

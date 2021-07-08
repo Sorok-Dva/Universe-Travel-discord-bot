@@ -16,14 +16,13 @@ ARG BUILD_PACKAGES="\
   ffmpeg \
 "
 
-SHELL ["/bin/bash", "-c"]
 RUN apt-get update ${APT_FLAGS} \
   && apt-get install ${APT_FLAGS} ${BUILD_PACKAGES} \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN wget -qO- https://storage.yandexcloud.net/yandexcloud-yc/install.sh | \
-	bash -s -- -a
+RUN ["/bin/bash", "-c", "wget -qO- https://storage.yandexcloud.net/yandexcloud-yc/install.sh | \
+	bash -s -- -a && echo 'source /root/yandex-cloud/completion.zsh.inc' >>  ~/.zshrc && source ~/.bashrc"]
 
 COPY package*.json ./
 
@@ -70,3 +69,4 @@ COPY --from=build /build/assets assets
 COPY --from=packages /build/production_modules node_modules
 
 CMD node dist
+SHELL ["/bin/bash", "-c"]

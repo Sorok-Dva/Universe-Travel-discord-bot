@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  bot:
-    container_name: ustar_travel-discord-bot
-    image: ustar_travel/discord-bot
+  discord-bot:
+    container_name: ustar_travel-bot
+    image: ustar_travel/helper
     build:
       context: .
       target: build
@@ -21,7 +21,7 @@ services:
       - default
     env_file: .env
   db:
-    container_name: ustart_travel-discord-bot-db
+    container_name: ustar_travel-db
     image: postgis/postgis:12-3.0-alpine
     volumes:
       - db-data:/var/lib/postgresql
