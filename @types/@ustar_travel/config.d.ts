@@ -13,7 +13,7 @@
  * */
 declare module '@ustar_travel/discord-bot' {
   /**
-   * Discord Bot Command Error Interface
+   * Discord Bot Command Config Interface
    *
    * @interface
    */

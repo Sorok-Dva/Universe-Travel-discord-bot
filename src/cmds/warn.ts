@@ -34,8 +34,8 @@ const command: CommandEntity<never> = {
   desc: 'Vous permet d\'avertir un utilisteur dont le comportement deviendrait problèmatique',
   args: [],
   mandatoryArgs: true,
-  usage: 'mute [utilisateur] [durée]',
-  examples: ['mute @utilisateur 1h', 'mute @utilisateur 7d'],
+  usage: 'warn [utilisateur] [raison]',
+  examples: ['warn @utilisateur Spam', 'warn @utilisateur Insultes'],
   run,
 }
 

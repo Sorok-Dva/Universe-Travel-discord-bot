@@ -42,7 +42,7 @@ export default {
     args: { reason: string; time: number},
   ): void => {
     const embed = new MessageEmbed()
-      .setTitle(`ALERTE GÉNÉRAL. Puisque vous semblez hors de contrôle,  personne ne pourra plus discuter ici pendant ${args.time}`)
+      .setTitle(`ALERTE GÉNÉRALE. Puisque vous semblez hors de contrôle, personne ne pourra plus discuter ici pendant ${args.time}`)
       .setColor(0xFF0000)
       .setTimestamp()
       .setAuthor(user.id)

@@ -60,7 +60,7 @@ const run = async (
 
         > Soyez plus vigileant et évitez qu'un tel comportement ne se reproduise !
 
-        _Nous espérons sincèrement que cette sanction te fera prendre conscience du type de comportement que nous n'attedons pas sur **U*Travel**_`)
+        _Nous espérons sincèrement que cette sanction te fera prendre conscience du type de comportement que nous n'attendons pas sur **U*Travel**_`)
       })
 
     // default logger in logs Channel
