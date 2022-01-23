@@ -36,7 +36,7 @@ const run = async (
 
     const userId = <string>message.mentions.users.first()?.id
     if (!userId) {
-      errors.raiseReply('Veuillez désigmer un utilisateur valide (@pseudo#000)', message)
+      errors.raiseReply('Veuillez désigner un utilisateur valide (@pseudo#000)', message)
       return
     }
 
@@ -50,7 +50,7 @@ const run = async (
           
           D'ici là, à la revoyure, en espérant que tu ne te perdes pas dans l'abyme du cosmos :milky_way:
           
-          https://discord.gg/vqDWDv4TEN
+          ${env.get('DISCORD_INVITATION')}
       `)
       }).catch(error => errors.log(error))
 
