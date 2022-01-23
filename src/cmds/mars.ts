@@ -1,8 +1,8 @@
 /** ***************************************************************************
- *  cmds/ping.ts
+ *  cmds/mars.ts
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
- *  | || |_  __) |            Created: 2021/07/06 4:13 AM by Сорок два
+ *  | || |_  __) |            Created: 2022/01/23 11:08 PM by Сорок два
  *  |__   _|/ __/             Updated: 2022/01/23 10:30 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
@@ -20,8 +20,9 @@ const allowedModules: AllowedModules[] = ['apod', 'image', 'mars']
 const allowedSubmodule: AllowedSubmodules = {
   apod: ['date', 'count'],
   image: ['date'],
-  mars: ['date'],
+  mars: ['camera', 'date', 'sol', 'page', 'help'],
 }
+
 const run = async (message: Message, args: Args): Promise<void> => {
   try {
     const [module, subcmd, arg] = args
@@ -61,6 +62,10 @@ const run = async (message: Message, args: Args): Promise<void> => {
               .catch(err => errors.raiseReply(err, message))
           }
         } break
+      case 'mars': // retrieve pictured of rovers on Mars
+        console.log(module, subcmd, arg)
+        console.log(args)
+        break
       default:
     }
   } catch (e) {
@@ -72,14 +77,15 @@ const run = async (message: Message, args: Args): Promise<void> => {
 
 const command: CommandEntity<string> = {
   title: 'nasa',
-  desc: 'Vous donne des informations relatives à la NASA',
+  desc: 'Vous donne diverses informations et photos depuis l\'api de la NASA',
   args: [],
   mandatoryArgs: true,
-  usage: 'nasa',
+  usage: 'nasa [module] [commandes]',
   examples: [
     'nasa apod _(réservé aux admins)_',
     'nasa apod date 2017-07-10  _(réservé à tous dans les salon bot)_',
     'nasa apod count 3 _(réservé à tous dans les salon bot)_',
+    'nasa mars NAVCAM 2021-01-01 _(réservé à tous dans les salon bot)_',
   ],
   run,
 }

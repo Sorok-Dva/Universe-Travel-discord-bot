@@ -9,7 +9,6 @@
 import { CronJob } from 'cron'
 import { sql } from 'slonik'
 import { MessageEmbed, TextChannel } from 'discord.js'
-import { YandexCron } from '../crons'
 import { Bot, errors } from '../core'
 import { psql } from '../connectors'
 import { NASA } from '../modules'
@@ -18,7 +17,6 @@ import { NASA } from '../modules'
 const cronJobs = (): void => {
   const cronJobsList = [
     new CronJob('0 * * * *', () => Bot.setActivity()), // Set Bot Activity every minute
-    new CronJob('0 */8 * * *', () => YandexCron.reloadToken()), // Regen Yandex IAM key every 8h (expires each 12h)
     new CronJob('0 10 * * *', async () => {
       const embed = <MessageEmbed> await NASA.apod({ notif: true })
 
@@ -36,7 +34,6 @@ export async function main (): Promise<void> {
     await psql.query(sql`SELECT 1`) // ensure the connection is active with database
     console.log('Successfully connected with to the database container')
     await Bot.setActivity()
-    YandexCron.reloadToken()
     await cronJobs()
   } catch (error) {
     errors.log(error)

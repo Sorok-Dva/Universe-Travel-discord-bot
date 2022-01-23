@@ -3,7 +3,7 @@
  *   _  _   ____      Author: Сорок два <sorokdva.developer@gmail.com>
  *  | || | |___ \
  *  | || |_  __) |            Created: 2021/06/21 7:14 PM by Сорок два
- *  |__   _|/ __/             Updated: 2021/06/26 1:08 PM by Сорок два
+ *  |__   _|/ __/             Updated: 2022/01/23 10:30 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import si from 'systeminformation'
@@ -106,7 +106,8 @@ const run = async (
             .catch(err => errors.raiseReply(err, message))
         })
         break
-      default:
+      default: {
+        const localDate = new Date()
         embed = new MessageEmbed()
           .setTitle('Global Debug Info')
           .setColor(0x188A6C)
@@ -114,9 +115,12 @@ const run = async (
           .addField('Made with', '`Node.js` / `TS` and `Discord.js` library (https://discord.js.org)')
           .addField('Creator', 'Made by <@141895511643914240> `<sorokdva.developer@gmail.com>`')
           .addField('Date of creation', 'Sun Jun 20 2021 1:49AM GMT+0200 (Central Europe Daylight Time)')
+          .addField('Date of update', 'Sun Jan 23 2022 9:31PM GMT+0200 (Central Europe Daylight Time)')
+          .addField('Bot Server Datetime', localDate.toLocaleString())
 
         message.reply({ embed })
           .catch(err => errors.raiseReply(err, message))
+      }
     }
   }
 }

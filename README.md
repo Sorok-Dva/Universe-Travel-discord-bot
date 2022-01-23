@@ -34,12 +34,9 @@ Then when you unmute him, he just got back his roles, and he's removed from mute
     
 ### Configuration
 - For translation :
-    - We use Yandex as translator. The configuration is a bit annoying but it worth it !
-    - Create your account on Yandex and follow those docs : [Yandex Translate Doc](https://cloud.yandex.com/en/docs/translate/operations/translate) & [Yandex Profile Doc](https://cloud.yandex.com/en/docs/cli/quickstart#initialize)
-    - Use the link on the profile doc page to retrieve your oauth token and put it in .env
-    - Connect to bot container with `make shell` and run `yc init --cloud-id ${YANDEX_CLOUD_API} --folder-id ${YANDEX_FOLDER_ID}` _(refer to Yandex Profile Doc to retrieve your cloud & folder id)_
-    - Get your first temp IAM Token with `yc iam create-token`
-    - Copy the command output into your env file
+    - We use Google as translator. There is a free plan of 500K chars to translate each month.
+    - Follow this [video guide](https://www.youtube.com/watch?v=Sjl9ilOpHG8) to create your google api credentials
+    - Copy the content of the json file into the `GOOGLE_CREDENTIALS` env variable (the json must be one a unique line, as in the video)
     
 ### Environment file
 ```dotenv

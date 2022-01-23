@@ -21,8 +21,6 @@ RUN apt-get update ${APT_FLAGS} \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN ["/bin/bash", "-c", "wget -qO- https://storage.yandexcloud.net/yandexcloud-yc/install.sh | \
-	bash -s -- -a && echo 'source /root/yandex-cloud/completion.zsh.inc' >>  ~/.zshrc && source ~/.bashrc"]
 
 COPY package*.json ./
 
@@ -63,6 +61,7 @@ ENV NODE_ENV production
 WORKDIR /app
 
 COPY package.json .
+COPY .quartzrc.json .
 COPY db/ db
 COPY --from=build /build/dist dist
 COPY --from=build /build/assets assets

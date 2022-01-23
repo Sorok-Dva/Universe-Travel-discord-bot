@@ -1,3 +1,4 @@
+// Astronomy Picture Of the Day (APOD)
 import { env } from '@materya/carbon'
 import { httpClientHelper } from '../../helpers'
 
@@ -26,6 +27,7 @@ const get = async (opts?: {
   const dateQuery = `${opts?.date ? `&date=${format}}` : ''}`
   const countQuery = `${opts?.count && !opts.date ? `&count=${opts.count}` : ''} `
   const finalEndpoint = `${endpoint}${dateQuery ?? ''}${countQuery ?? ''}`
+  console.log(finalEndpoint)
   try {
     return await httpClientHelper.get<NasaApodGetResponse>(
       finalEndpoint,
