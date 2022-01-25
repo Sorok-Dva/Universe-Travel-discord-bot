@@ -115,7 +115,7 @@ const run = async (
           .addField('Made with', '`Node.js` / `TS` and `Discord.js` library (https://discord.js.org)')
           .addField('Creator', 'Made by <@141895511643914240> `<sorokdva.developer@gmail.com>`')
           .addField('Date of creation', 'Sun Jun 20 2021 1:49AM GMT+0200 (Central Europe Daylight Time)')
-          .addField('Date of update', 'Sun Jan 23 2022 9:31PM GMT+0200 (Central Europe Daylight Time)')
+          .addField('Date of update', 'Sun Jan 25 2022 10:31PM GMT+0200 (Central Europe Daylight Time)')
           .addField('Bot Server Datetime', localDate.toLocaleString())
 
         message.reply({ embed })

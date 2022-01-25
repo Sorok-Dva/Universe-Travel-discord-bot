@@ -98,9 +98,9 @@ const run = async (
       const execTime = `${(endTime - startTime).toFixed(3)} ms`
 
       const embed = new MessageEmbed()
-        .setTitle(`Les roles separators ont été mis à jout pou ${user.username}`)
+        .setTitle(`Les roles separators ont été mis à jour pour ${user.username}`)
         .setColor('green')
-        .setDescription('Role séparaeurs ajoutés avec succes')
+        .setDescription('Role séparateurs ajoutés avec succès')
         .setFooter(`${message.author.username}, executed in ${execTime}`)
         .setTimestamp()
 
@@ -137,9 +137,11 @@ const command: CommandEntity<string> = {
   title: 'rs',
   desc: 'Permet de mettre les roles separator sur un membre si définis ou mets à jour tout le membre (mod et +)',
   mandatoryArgs: false,
-  usage: 'roleseparator [utilisateur]',
-  examples: ['roleseparator @utilisateur', 'roleseparator'],
+  usage: 'rs [utilisateur]',
+  examples: ['rs @utilisateur', 'rs'],
   run,
 }
 
 export default command
+
+export { putRolesSeparators }

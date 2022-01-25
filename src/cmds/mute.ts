@@ -57,11 +57,11 @@ const run = async (
       .then(u => {
         u.send(`🤐 **Oops, vous venez d'être mute**
 
-        > Cela signifie que tu as enfreins une des lois de la charte. Nous te rappelons que nous aspirons à avoir une communauté adulte et soudée. Bienveillance et respect donc donc les motres mots si tu veux pouvoir rester.
+        > Cela signifie que vous avez enfreins une des lois de la charte. Nous vous rappelons que nous aspirons à avoir une communauté adulte et soudée. Bienveillance et respect sont donc primordiales si vous voulez rester.
 
-        > Tu as été mute pour la raison suivante : **${reason}**
+        > Vous avez été mute pour la raison suivante : **${reason}**
 
-        _Nous espérons sincèrement que cette sanction t'as fait prendre conscience du type de comportement que nous n'attendons pas sur **U*Travel**_`)
+        _Nous espérons sincèrement que cette sanction vous fait prendre conscience du type de comportement que nous n'attendons pas sur **Universe Travel**_`)
       })
 
     // default logger in logs Channel

@@ -1,4 +1,4 @@
-# U*Travel Helper Discord
+# "Universe Travel" Helper Discord
 __(readme in construction)__
 
 _For the discord community U*Travel ([Discord Server](https://discord.gg/Evd7mgdMZ2))_

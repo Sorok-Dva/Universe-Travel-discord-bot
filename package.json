@@ -1,5 +1,5 @@
 {
-  "name": "ustar_travel_helper",
+  "name": "universe_travel_helper",
   "version": "0.0.2a",
   "private": true,
   "author": "Сорок два#0042 <sorokdva.developer@gmail.com>",
@@ -44,9 +44,11 @@
     "@google-cloud/translate": "^6.3.1",
     "@materya/carbon": "1.9.2",
     "@materya/quartz": "1.0.0-alpha.13",
+    "@types/axios": "^0.14.0",
     "@types/dotenv": "^6.1.1",
     "@types/node": "^12.7.3",
     "@types/ws": "^6.0.1",
+    "axios": "^0.25.0",
     "cheerio": "^1.0.0-rc.2",
     "cron": "^1.8.2",
     "debug": "~2.6.9",

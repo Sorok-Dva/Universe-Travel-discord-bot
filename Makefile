@@ -46,7 +46,7 @@ $(ENVFILE):
 
 .PHONY: init
 init: .env src/config.local build
-	echo "Project initiated, please read README.md file to complete your .env value then execute make ycinit"
+	echo "Project initiated, please read README.md file to complete your .env then run make start"
 
 .PHONY: build
 build:
@@ -91,10 +91,6 @@ start: $(ENVFILE) $(LOCALCONFIG) $(MODULES) db
 .PHONY: stop
 stop:
 	$(DC) down
-
-.PHONY: ycinit
-ycinit: $(ENVFILE) $(LOCALCONFIG)
-	$(DC) exec -it $(BOT_CONTAINER) bash "yc init --no-user-output --token $(YANDEX_OAUTH) --cloud-id $(YANDEX_CLOUD_API) --folder-id $(YANDEX_FOLDER_ID)"
 
 .PHONY: test
 test: $(ENVFILE) $(LOCALCONFIG) $(MODULES)

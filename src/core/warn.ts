@@ -10,7 +10,7 @@ import { Message, MessageEmbed, User } from 'discord.js'
 
 export default {
   /**
-   * send a mode warmning to a specific user (save in userHistory)
+   * send a mode warning to a specific user (save in userHistory)
    *
    * @function
    * */
@@ -23,7 +23,7 @@ export default {
     const embed = new MessageEmbed()
       .setTitle(`Avertissement pour <@${user.id}>`)
       .setColor(0xFF0000)
-      .setDescription(`Tu as enffrein notre charte : ${args.reason}.\nTe voilà prévenu, la prochaine fois c'est une santion`)
+      .setDescription(`Vous avez enfreins notre charte : ${args.reason}.\nVous voilà prévenu, la prochaine fois c'est une sanction.`)
       .setTimestamp()
       .setAuthor(user.id)
 
@@ -32,7 +32,7 @@ export default {
 
   /**
    * And a serious alert when everything goes out of control.
-   * Sending alert will temporary disabled chat where the command were tt=yped
+   * Sending alert will temporary disabled chat where the command were typed
    *
    * @function
    * */

@@ -13,13 +13,11 @@ import { errors } from '../core'
 import { CommandAccess } from '../helpers'
 
 type Args = readonly string[]
-type AllowedModules = 'apod' | 'image' | 'mars'
+type AllowedModules = 'mars'
 type AllowedSubmodules = Record<AllowedModules, string[]>
 
-const allowedModules: AllowedModules[] = ['apod', 'image', 'mars']
+const allowedModules: AllowedModules[] = ['mars']
 const allowedSubmodule: AllowedSubmodules = {
-  apod: ['date', 'count'],
-  image: ['date'],
   mars: ['camera', 'date', 'sol', 'page', 'help'],
 }
 
@@ -34,7 +32,7 @@ const run = async (message: Message, args: Args): Promise<void> => {
     const { author } = message
     console.log([module, subcmd, arg])
     switch (module) {
-      case 'apod': // retrieve a picture on nasa database
+      case 'mars': // retrieve a picture of mars rovers
         switch (subcmd) {
           case 'date': { // based on the desired date
             const embed = <MessageEmbed> await NASA.apod({
@@ -62,10 +60,6 @@ const run = async (message: Message, args: Args): Promise<void> => {
               .catch(err => errors.raiseReply(err, message))
           }
         } break
-      case 'mars': // retrieve pictured of rovers on Mars
-        console.log(module, subcmd, arg)
-        console.log(args)
-        break
       default:
     }
   } catch (e) {
@@ -82,9 +76,6 @@ const command: CommandEntity<string> = {
   mandatoryArgs: true,
   usage: 'nasa [module] [commandes]',
   examples: [
-    'nasa apod _(réservé aux admins)_',
-    'nasa apod date 2017-07-10  _(réservé à tous dans les salon bot)_',
-    'nasa apod count 3 _(réservé à tous dans les salon bot)_',
     'nasa mars NAVCAM 2021-01-01 _(réservé à tous dans les salon bot)_',
   ],
   run,

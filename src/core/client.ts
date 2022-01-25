@@ -49,20 +49,20 @@ export default class BotClient extends Client {
     super()
     console.log('starting bot initialization...')
     this.commands = [ // don't forget to add your new commands here or it wont run
-      'rs',
       'debug',
-      'invit',
-      'say',
-      'servers',
       'ping',
+      'invit',
+      'welcome',
+      'rs',
+      'say',
       'prune',
-      'reload',
       'mute',
       'unmute',
-      'welcome',
       'bye',
       'color',
       'nasa',
+      'mars',
+      'astronauts',
     ]
     this.config = config
     this.prefix = config.prefix
