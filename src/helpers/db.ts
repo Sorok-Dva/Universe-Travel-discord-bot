@@ -9,6 +9,7 @@
 import { env } from '@materya/carbon'
 import { GuildMember, Message, Role } from 'discord.js'
 import { Entity, User } from '@ustar_travel/discord-bot'
+import { PrimaryKey } from '@materya/quartz'
 import { userFactory } from '../db/factories'
 import { userRepo } from '../db/repositories'
 import { rolesHelper } from '.'
@@ -44,6 +45,12 @@ export const userUpdate = async (
   return finalUser
 }
 
+export const getUser = async (id: string): Promise<Entity<User>> => userRepo.one({
+  filters: {
+    id: id as PrimaryKey,
+  },
+})
+
 export const savingRolesBeforeMute = async (
   member: GuildMember,
   timer: string,
@@ -59,7 +66,7 @@ export const savingRolesBeforeMute = async (
   member?.roles.cache.map(r => {
     if (necessaryRemoveRole.includes(r.id)) {
       oldRanks.push(r.id)
-      member.roles.remove(r, 'Mute, nécessite la suppresion de tous les roles pour être fonctionnel')
+      member.roles.remove(r, 'Mute, nécessite la suppression de tous les roles pour être fonctionnel')
     }
     member.roles.add(env.get('MUTE_ROLE'), `Mute Temporaire de ${timer} - Raison : ${reason}`)
     return r

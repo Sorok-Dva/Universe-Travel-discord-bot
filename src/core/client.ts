@@ -63,6 +63,7 @@ export default class BotClient extends Client {
       'nasa',
       'mars',
       'astronauts',
+      'profil',
     ]
     this.config = config
     this.prefix = config.prefix
@@ -143,8 +144,6 @@ export default class BotClient extends Client {
   ): Promise<void> {
     try {
       if (!message.guild || message.channel.type === 'dm' || message.author.bot) return
-      await dbHelper.userUpdate(message)
-
       const { commands, prefix } = this
 
       const isValidCommandString = (
@@ -186,7 +185,7 @@ export default class BotClient extends Client {
             }
           }
         }
-      }
+      } else await dbHelper.userUpdate(message)
     } catch (err) {
       errors.raiseReply(err, message)
     }

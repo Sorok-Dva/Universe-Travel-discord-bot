@@ -47,6 +47,7 @@ declare module '@ustar_travel/discord-bot' {
     | 'wallpaper'
     | 'rs'
     | 'color'
+    | 'profil'
 
   /**
    * Command Entity Interface
