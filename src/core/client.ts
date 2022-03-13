@@ -87,7 +87,9 @@ export default class BotClient extends Client {
     this.client.on('guildBanAdd', () => updateStats(this.client))
     this.client.on('guildMemberAdd', () => updateStats(this.client))
     this.client.on('guildMemberRemove', () => updateStats(this.client))
-    this.client.on('roleUpdate', () => updateStats(this.client))
+    this.client.on('roleUpdate', (e) => {
+      console.log('roleUpdated', e)
+    })
     // this.client.on('voiceStateUpdate', this.voiceStateUpdate)
     this.client.on('message', msg => this.message(msg))
 
