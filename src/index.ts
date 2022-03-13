@@ -6,6 +6,7 @@
  *  |__   _|/ __/             Updated: 2021/06/23 10:32 PM by Сорок два
  *     |_| |_____|U*Travel
  *************************************************************************** */
+import 'dotenv/config'
 import { Bot } from './core'
 
 (async (): Promise<void> => {

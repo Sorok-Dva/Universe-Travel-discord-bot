@@ -7,16 +7,18 @@
  *     |_| |_____|U*Travel
  *************************************************************************** */
 import { CronJob } from 'cron'
-import { sql } from 'slonik'
 import { MessageEmbed, TextChannel } from 'discord.js'
 import { Bot, errors } from '../core'
-import { psql } from '../connectors'
 import { NASA } from '../modules'
+import updateStats from '../crons/memberstats'
 
 // all cron job goes here
 const cronJobs = (): void => {
+  updateStats(Bot.client)
+  
   const cronJobsList = [
     new CronJob('0 * * * *', () => Bot.setActivity()), // Set Bot Activity every minute
+    new CronJob('30 * * * *', async () => updateStats(Bot.client)),
     new CronJob('0 10 * * *', async () => {
       const embed = <MessageEmbed> await NASA.apod({ notif: true })
 
@@ -31,8 +33,6 @@ const cronJobs = (): void => {
 // eslint-disable-next-line import/prefer-default-export
 export async function main (): Promise<void> {
   try {
-    await psql.query(sql`SELECT 1`) // ensure the connection is active with database
-    console.log('Successfully connected with to the database container')
     await Bot.setActivity()
     await cronJobs()
   } catch (error) {

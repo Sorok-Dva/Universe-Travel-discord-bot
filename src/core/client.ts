@@ -16,7 +16,8 @@ import {
 import { Client, Message } from 'discord.js'
 import { errors } from '.'
 import { ConnectionHandler } from '../handlers'
-import { CommandArgs, dbHelper } from '../helpers'
+import { CommandArgs } from '../helpers'
+import updateStats from '../crons/memberstats'
 
 /**
  * Bot Client Class that retrieve djs collections after login and listen events
@@ -53,17 +54,13 @@ export default class BotClient extends Client {
       'ping',
       'invit',
       'welcome',
-      'rs',
       'say',
       'prune',
-      'mute',
-      'unmute',
       'bye',
       'color',
       'nasa',
       'mars',
       'astronauts',
-      'profil',
     ]
     this.config = config
     this.prefix = config.prefix
@@ -87,6 +84,10 @@ export default class BotClient extends Client {
     this.client.on('disconnect', () => console.warn('Disconnected'))
     this.client.on('shardDisconnect', () => console.warn('shardDisconnect'))
     this.client.on('shardError', () => console.warn('shardError'))
+    this.client.on('guildBanAdd', () => updateStats(this.client))
+    this.client.on('guildMemberAdd', () => updateStats(this.client))
+    this.client.on('guildMemberRemove', () => updateStats(this.client))
+    this.client.on('roleUpdate', () => updateStats(this.client))
     // this.client.on('voiceStateUpdate', this.voiceStateUpdate)
     this.client.on('message', msg => this.message(msg))
 
@@ -185,7 +186,7 @@ export default class BotClient extends Client {
             }
           }
         }
-      } else await dbHelper.userUpdate(message)
+      }
     } catch (err) {
       errors.raiseReply(err, message)
     }

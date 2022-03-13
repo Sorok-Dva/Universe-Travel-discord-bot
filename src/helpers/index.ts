@@ -8,8 +8,6 @@
  *************************************************************************** */
 export * as CommandAccess from './commandAccess'
 export * as CommandArgs from './commandArgs'
-export * as dbHelper from './db'
-export * as levelHelper from './level'
 export * as logger from './logger'
 export * as rolesHelper from './roles'
 export * as httpClientHelper from './httpClientHelper'
