@@ -18,7 +18,7 @@ const cronJobs = (): void => {
   
   const cronJobsList = [
     new CronJob('0 * * * *', () => Bot.setActivity()), // Set Bot Activity every minute
-    new CronJob('30 * * * *', async () => updateStats(Bot.client)),
+    new CronJob('* * * * *', async () => updateStats(Bot.client)),
     new CronJob('0 10 * * *', async () => {
       const embed = <MessageEmbed> await NASA.apod({ notif: true })
 
