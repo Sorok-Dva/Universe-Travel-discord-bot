@@ -3,6 +3,7 @@ import {
   Client,
   VoiceChannel,
 } from 'discord.js'
+import pool from '../db/pool'
 
 const updateStats = async (client: Client): Promise<void> => {
   const guild = client.guilds.cache.find(g => g.id === env.get('SERVER_ID'))
@@ -49,6 +50,8 @@ const updateStats = async (client: Client): Promise<void> => {
     .setName(`${staffCountChannel.name.split(':')[0]}: ${staff}`)
   await goalUsersCountChannel
     .setName(`${goalUsersCountChannel.name.split(':')[0]}: ${goalCount}`)
+  
+  pool.query('UPDATE stats SET discord_users = ?', [membersCount])
 }
 
 export default updateStats

@@ -61,6 +61,7 @@ export default class BotClient extends Client {
       'nasa',
       'mars',
       'astronauts',
+      'rapport',
     ]
     this.config = config
     this.prefix = config.prefix

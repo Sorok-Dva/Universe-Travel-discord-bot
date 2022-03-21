@@ -43,6 +43,7 @@ declare module '@ustar_travel/discord-bot' {
     | 'rs'
     | 'color'
     | 'profil'
+    | 'rapport'
 
   /**
    * Command Entity Interface
