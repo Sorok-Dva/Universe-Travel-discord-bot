@@ -16,7 +16,7 @@ import {
 import { Client, Message } from 'discord.js'
 import { errors } from '.'
 import { ConnectionHandler } from '../handlers'
-import { CommandArgs } from '../helpers'
+import { CommandArgs, msgHelper } from '../helpers'
 import updateStats from '../crons/memberstats'
 
 /**
@@ -99,7 +99,7 @@ export default class BotClient extends Client {
   }
 
   /**
-   * Discord ready event
+  * Discord ready event
    *
    * @function
    *
@@ -148,6 +148,12 @@ export default class BotClient extends Client {
   ): Promise<void> {
     try {
       if (!message.guild || message.channel.type === 'dm' || message.author.bot) return
+      const ignoredCategories = [
+      '947983051802157117',
+      '957390819055243394',
+      '946903956032987198'
+      ] // (TICKETS, MOD, ADMIN)
+      if (!ignoredCategories.includes(<string>message.channel.parentID)) await msgHelper.updateMessagesCount()
       const { commands, prefix } = this
 
       const isValidCommandString = (

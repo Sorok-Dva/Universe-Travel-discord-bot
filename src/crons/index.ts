@@ -7,4 +7,5 @@
  *     |_| |_____|U*Travel
  *************************************************************************** */
 // eslint-disable-next-line import/prefer-default-export
+export * from './autodump'
 export * from './memberstats'

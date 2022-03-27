@@ -11,6 +11,7 @@ import { MessageEmbed, TextChannel } from 'discord.js'
 import { Bot, errors } from '../core'
 import { NASA } from '../modules'
 import updateStats from '../crons/memberstats'
+import autoDump from '../crons/autodump'
 
 // all cron job goes here
 const cronJobs = (): void => {
@@ -18,6 +19,7 @@ const cronJobs = (): void => {
   
   const cronJobsList = [
     new CronJob('0 * * * *', () => Bot.setActivity()), // Set Bot Activity every minute
+    // new CronJob('* * * * *', () => autoDump()),
     new CronJob('* * * * *', async () => updateStats(Bot.client)),
     new CronJob('0 14 * * *', async () => {
       const embed = <MessageEmbed> await NASA.apod({ notif: true })
