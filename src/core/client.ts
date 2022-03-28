@@ -16,7 +16,7 @@ import {
 import { Client, Message } from 'discord.js'
 import { errors } from '.'
 import { ConnectionHandler } from '../handlers'
-import { CommandArgs, msgHelper } from '../helpers'
+import { CommandArgs, msgHelper, stalkHelper } from '../helpers'
 import updateStats from '../crons/memberstats'
 
 /**
@@ -62,6 +62,7 @@ export default class BotClient extends Client {
       'mars',
       'astronauts',
       'rapport',
+      'stalk',
     ]
     this.config = config
     this.prefix = config.prefix
@@ -147,6 +148,7 @@ export default class BotClient extends Client {
     message: Message,
   ): Promise<void> {
     try {
+      stalkHelper.removeFinishedStalks(this.client, message)
       if (!message.guild || message.channel.type === 'dm' || message.author.bot) return
       const ignoredCategories = [
       '947983051802157117',
@@ -154,6 +156,8 @@ export default class BotClient extends Client {
       '946903956032987198'
       ] // (TICKETS, MOD, ADMIN)
       if (!ignoredCategories.includes(<string>message.channel.parentID)) await msgHelper.updateMessagesCount()
+      const stalkedUsers = await stalkHelper.retrieveStalkedUsers()
+      if (stalkedUsers.includes(message.author.id)) stalkHelper.handleStalk(this.client, message)    
       const { commands, prefix } = this
 
       const isValidCommandString = (
