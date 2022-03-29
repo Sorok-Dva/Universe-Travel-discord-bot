@@ -45,6 +45,7 @@ declare module '@ustar_travel/discord-bot' {
     | 'profil'
     | 'rapport'
     | 'stalk'
+    | 'unstalk'
 
   /**
    * Command Entity Interface

@@ -3,9 +3,9 @@ import { Client, Message, MessageEmbed, TextChannel, VoiceChannel } from 'discor
 import { env } from '@materya/carbon'
 
 const retrieveStalkedUsers = async (): Promise<string[]> => {
-  const date = new Date().toLocaleDateString('en-GB').split('/').reverse().join('/')
+  const date = new Date().toLocaleDateString('en-GB').split('/').reverse().join('-')
   // @ts-ignore
-  const result = await pool.query(`SELECT identifier FROM discord_stalks WHERE until > "${date}"`)
+  const result = await pool.query(`SELECT identifier FROM discord_stalks WHERE until >= "${date}"`)
   // @ts-ignore
   const users = result[0].map((u: Record<string, string>) => u.identifier)
   return users
@@ -13,30 +13,36 @@ const retrieveStalkedUsers = async (): Promise<string[]> => {
 
 const removeFinishedStalks = async (client: Client, message: Message): Promise<void> => {
   const guild = client.guilds.cache.find(g => g.id === env.get('SERVER_ID'))
-  const date = new Date().toLocaleDateString('en-GB').split('/').reverse().join('/') 
+  const date = new Date().toLocaleDateString('en-GB').split('/').reverse().join('-') 
   if (!guild) return
   // @ts-ignore
-  const result = await pool.query(`SELECT identifier FROM discord_stalks WHERE until < "${date}"`)
+  const result = await pool.query(`SELECT * FROM discord_stalks WHERE until < "${date}"`)
   // @ts-ignore
-  const finishedStalk = result[0].map((u: Record<string, string>) => u.identifier)
+  const finishedStalk = result[0].map((r: Record<string, string>) => ({ 
+    user: r.identifier,
+    by: r.asked_by_id,
+    until: r.until,
+    date: r.created_at,
+    reason: r.reason,
+  }))
   const stalkData = await pool.query(`SELECT * FROM discord_stalks WHERE identifier = ${message.author.id}`)
   const stalkChannel = guild.channels.cache.get(env.get('STALK_CHANNEL')) as TextChannel
   
-  finishedStalk.map(async (user: string) => {
-    await pool.query(`DELETE FROM discord_stalks WHERE identifier = "${user}"`)
+  finishedStalk.map(async (stalk: Record<string, string>) => {
+    await pool.query(`DELETE FROM discord_stalks WHERE identifier = "${stalk.user}"`)
     const embed = new MessageEmbed()
       .setColor('#2fff03')
-      .setTitle(`Fin de surveillance de ${message.author.username}`)
-      .addField(`Tag de l'utilisateur:`, `<@${message.author.id}>`, true)
+      .setTitle(`Fin de surveillance`)
+      .addField(`Tag de l'utilisateur`, `<@${stalk.user}>`, true)
       // @ts-ignore
-      .addField('Surveillance demandé par', `<@${stalkData[0][0].asked_by_id}>`, true)
+      .addField('Surveillance demandé par', `<@${stalk.by}>`, true)
       // @ts-ignore
-      .addField('Début de la surveillance', `<@${new Date(stalkData[0][0].created_at).toLocaleTimeString()}>`, false)
+      .addField('Début de la surveillance', new Date(stalk.date).toLocaleString(), false)
       // @ts-ignore
-      .addField('Raison de la surveillance', stalkData[0][0].reason)
+      .addField('Raison de la surveillance', stalk.reason)
       .setTimestamp()
       // @ts-ignore
-      .setFooter(`Surveillance terminé le ${new Date(stalkData[0][0].until).toLocaleDateString()}`)
+      .setFooter(`Surveillance terminée le ${new Date(stalk.until).toLocaleDateString()}`)
     await stalkChannel.send({ embed })
   })
 }
@@ -62,7 +68,7 @@ const handleStalk = async (client: Client, message: Message): Promise<void> => {
     .addField('Raison du stalk', stalkData[0][0].reason)
     .setTimestamp()
     // @ts-ignore
-    .setFooter(`Surveillance engagé jusqu'au ${new Date(stalkData[0][0].until).toLocaleDateString()} à minuit`)
+    .setFooter(`Surveillance engagée jusqu'au ${new Date(stalkData[0][0].until).toLocaleDateString()} à 23:59`)
 
     stalkChannel.send({ embed })
     /*await stalkChannel.threads.create({
